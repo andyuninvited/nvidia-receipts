@@ -43,8 +43,8 @@ coverage_subscore = 0.5 * data_coverage + 0.3 * recency + 0.2 * volume
 specificity_multiplier = 0.3 + 0.7 * query_specificity
 ```
 
-- **data_coverage** = fraction of expected sources that returned at least one row.
-- **recency** = 1.0 if all matched rows are within 14 days, decaying linearly to 0.0 at 90 days.
+- **data_coverage** = fraction of expected sources that were successfully queried, regardless of whether each returned rows. A clean empty result is not penalized here; the row-count signal is the volume term. In production this drops only when a source query times out or the system is unreachable.
+- **recency** = 1.0 if all matched rows are within 14 days, decaying linearly to 0.0 at 90 days. Returns 0.0 when no rows were matched.
 - **volume** = `min(total_rows_matched / 10, 1.0)`.
 - **query_specificity** = fraction of expected query signals (region, intent) the parser extracted.
 

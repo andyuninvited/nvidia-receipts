@@ -103,7 +103,7 @@
       "type": "object",
       "description": "Breakdown of how the confidence number was computed. Every term is reproducible from the receipt alone. confidence = coverage_subscore * specificity_multiplier.",
       "properties": {
-        "data_coverage": { "type": "number", "description": "Fraction of expected sources that returned at least one row." },
+        "data_coverage": { "type": "number", "description": "Fraction of expected sources that were successfully queried (whether or not each returned rows). A clean empty result is not penalized here; the row-count signal is captured by the volume term. In production this would only drop when a source query times out or the system is unreachable." },
         "recency": { "type": "number", "description": "1.0 if all matched rows within 14 days, decays linearly to 0.0 at 90 days." },
         "volume": { "type": "number", "description": "min(total_rows_matched / target_rows, 1.0). target_rows = 10." },
         "query_specificity": { "type": "number", "description": "Fraction of expected query signals (region, intent) the parser extracted. 0.0 means the question was vague enough to fall back to no filter." },

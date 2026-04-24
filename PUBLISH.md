@@ -2,6 +2,10 @@
 
 Two artifacts: the 3-minute demo script and the LinkedIn caption draft. Both are scoped to the NVIDIA Director, Product Platform Retail and CPG application (JR2015305).
 
+- Live demo URL: https://nvidia-receipts.vercel.app/
+- Repo: https://github.com/andyuninvited/nvidia-receipts
+- Architecture writeup: https://github.com/andyuninvited/nvidia-receipts/blob/main/ARCHITECTURE.md
+
 ---
 
 ## Demo script (3 minutes, hard cap)
@@ -14,17 +18,21 @@ Open Streamlit on a clean browser, full screen. No music. Plain narration.
 
 ### Minute 2 — The walkthrough (75 sec)
 
-Streamlit on screen.
+Live Vercel URL on screen: https://nvidia-receipts.vercel.app/
 
-> "Operator question: which SKUs are at risk of stockout this week in the Midwest." [Click the sample question. Click Run agent.]
+> "Operator question: which SKUs are at risk of stockout this week in the Midwest." [Click sample pill 1. Click Run agent.]
 
-> "Answer on the left names the SKU and store combinations that are short of the reorder point and flags the supplier delays driving them. The receipt on the right is the headline of the demo."
+> "Answer on the left names the SKU and store combinations short of the reorder point and flags the supplier delays driving them. The receipt on the right is the headline of the demo."
 
 > "Confidence is one point zero. It is not the model's self-reported number. It is computed deterministically from data coverage, recency, volume, and a query specificity term. Every term is reproducible from the receipt alone. Sources queried lists all three CSVs with the exact filter applied and the row IDs pulled. Prompt context records the character count and SHA-256 of the full prompt sent to the model. An auditor can verify nothing was tampered with after the fact."
 
-> "Now the failure case." [Click 'Which suppliers in Latvia are most reliable?']
+> "Now a region with no risk." [Click sample pill 2: 'Are any SKUs running low in the Northeast this week?']
 
-> "Confidence drops to point three. The parser found no region or intent signal in the question, so the specificity multiplier punishes the score. The agent does not call the model. It abstains and surfaces a queue ticket for human review. The receipt explains exactly why."
+> "The model honestly says no SKUs are running low. But notice the receipt: confidence is point five, in the caveat band. The system queried all three sources cleanly. Coverage is one. Specificity is one. But volume is zero and recency is zero because no rows came back. The receipt explains the model's clean negative answer at a confidence the risk team can audit. This is the case I want the platform to handle."
+
+> "And the failure case." [Click sample pill 4: 'Which suppliers in Latvia are most reliable?']
+
+> "Confidence drops to point three. The parser found no region or intent signal. The specificity multiplier collapses the score. The agent does not call the model at all. It abstains and surfaces a queue ticket for human review. The receipt explains exactly why."
 
 ### Minute 3 — Why this generalizes (45 sec)
 
@@ -46,8 +54,8 @@ Enterprise retail adoption of agentic AI stalls at the risk committee, not the m
 
 The receipt is the artifact the risk committee actually signs off on. It is what unlocks production deployment in regulated retailers, and I think it is the missing primitive in the NVIDIA Retail Blueprints surface.
 
-Code: [github link]
-Architecture writeup explaining why receipts are a platform primitive, not an SDK feature: [link]
+Code: https://github.com/andyuninvited/nvidia-receipts
+Architecture writeup explaining why receipts are a platform primitive, not an SDK feature: https://nvidia-receipts.vercel.app/  (repo: https://github.com/andyuninvited/nvidia-receipts)
 
 If you work on agentic platforms in retail, I would love to compare notes.
 
@@ -61,7 +69,7 @@ I built a weekend prototype on the NVIDIA NIM stack that makes the receipt a fir
 
 This is the piece I think is missing from every NVIDIA Retail Blueprint. The receipt sits between NeMo Retriever, NIM, and NeMo Guardrails. It is what gets a project past compliance and into production in retailers that run 2 to 6 percent net margins.
 
-Code, architecture writeup, and a 3-minute walkthrough: [link]
+Code, architecture writeup, and a 3-minute walkthrough: https://nvidia-receipts.vercel.app/  (repo: https://github.com/andyuninvited/nvidia-receipts)
 
 ### Option C — Provocative
 
@@ -69,16 +77,17 @@ Confidence scores from LLMs are a compliance failure mode.
 
 A model marking its own paper is not an audit trail. It is a tautology. So this weekend I built a retail agent on the NVIDIA NIM stack where confidence is computed deterministically from observable properties of the retrieval, not asked of the model. Every response ships with a structured receipt that a risk committee can actually sign off on.
 
-The receipt is the platform primitive that unlocks regulated retail. Repo and architecture writeup: [link]
+The receipt is the platform primitive that unlocks regulated retail. Repo and architecture writeup: https://nvidia-receipts.vercel.app/  (repo: https://github.com/andyuninvited/nvidia-receipts)
 
 ---
 
 ## Posting checklist
 
-- [ ] Push to public GitHub `andyrosic/nvidia-receipts` (MIT)
-- [ ] Update README links at the top of this file
+- [x] Push to public GitHub `andyuninvited/nvidia-receipts` (MIT)
+- [x] Deploy live at https://nvidia-receipts.vercel.app/ (Vercel + NIM key in env vars)
+- [x] Update README links at the top of this file
+- [x] Verify all 4 sample questions exercise PASS / CAVEAT / PASS-at-edge / ABSTAIN with live NIM
 - [ ] Test clone-and-run on a fresh machine in under 10 minutes
 - [ ] Record the demo, upload to Loom or GitHub release asset
-- [ ] Update LinkedIn caption with the live links
 - [ ] Publish Monday morning between 8 and 10 AM PT
 - [ ] Send a direct message to the NVIDIA recruiter or hiring manager with a short note pointing at the post

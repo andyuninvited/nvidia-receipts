@@ -2,6 +2,9 @@
 
 A weekend prototype of an audit-grade retail agent on the NVIDIA NIM stack. Every answer the agent emits ships with a structured receipt that a retail risk committee can sign off on.
 
+**Live demo:** https://nvidia-receipts.vercel.app/
+**Repo:** https://github.com/andyuninvited/nvidia-receipts (MIT)
+
 ## Why this exists
 
 Enterprise retail adoption of agentic AI stalls at the risk committee, not the model. The three blockers are predictable.
@@ -73,13 +76,18 @@ Returns an answer that names the at-risk SKU/store combinations, plus a receipt 
 - `fallback` block showing whether a caveat or abstain path triggered.
 - `duration_ms`, `timestamp`, `user`, and `receipt_id`.
 
-Try the vague question to see the abstain path:
+## Sample questions and what they demonstrate
 
-```
-$ python -m src.cli "Which suppliers in Latvia are most reliable?"
-```
+The four sample question pills in the UI are designed to demonstrate every band of agent behavior with live NIM calls.
 
-Confidence drops to 0.3 because the parser found no region or intent signal. The agent declines to answer and surfaces a queue ticket. The receipt explains exactly why.
+| Question | Confidence | State | NIM call | What the model says |
+|---|---|---|---|---|
+| Which SKUs are at risk of stockout this week in the Midwest? | 1.00 | PASS | yes | Lists the 9 at-risk SKU/store rows by ID with supplier-delay context |
+| Are any SKUs running low in the Northeast this week? | 0.50 | CAVEAT | yes | "No SKUs identified as running low" — clean negative answer with caveat that volume was 0 |
+| Which SKUs are at risk of stockout this week across all our stores? | 0.65 | PASS (at threshold) | yes | Same retrieval as Midwest case, but receipt shows lower specificity multiplier (no region in question) |
+| Which suppliers in Latvia are most reliable? | 0.30 | ABSTAIN | no | Queue ticket emitted, no NIM call. Receipt records that the parser found no region or intent signal. |
+
+The Northeast clean-empty case is the demo-defining one: the model honestly says "none found" because the data is empty, and the receipt records exactly why confidence dropped (volume=0, recency=0, but specificity stayed 1.0). That is the audit story.
 
 ## Sample receipt (excerpt)
 
