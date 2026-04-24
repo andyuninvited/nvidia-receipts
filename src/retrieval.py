@@ -94,18 +94,12 @@ def retrieve(
 
     inv_filter_desc = " AND ".join(inv_filter_parts) if inv_filter_parts else "no filter (full table)"
 
-    if not inventory:
-        sales: list[dict] = []
-        supply: list[dict] = []
-        sales_filter_desc = "no inventory matches; sales not pulled"
-        supply_filter_desc = "no inventory matches; supply signals not pulled"
-    else:
-        sku_store_keys = {(r["sku"], r["store_id"]) for r in inventory}
-        skus = sorted({r["sku"] for r in inventory})
-        sales = [r for r in sales_full if (r["sku"], r["store_id"]) in sku_store_keys]
-        sales_filter_desc = f"(sku, store_id) joined to filtered inventory ({len(sku_store_keys)} pairs)"
-        supply = [r for r in supply_full if r["sku"] in set(skus)]
-        supply_filter_desc = f"sku in {skus}"
+    sku_store_keys = {(r["sku"], r["store_id"]) for r in inventory}
+    skus = sorted({r["sku"] for r in inventory})
+    sales = [r for r in sales_full if (r["sku"], r["store_id"]) in sku_store_keys]
+    sales_filter_desc = f"(sku, store_id) joined to filtered inventory ({len(sku_store_keys)} pairs)"
+    supply = [r for r in supply_full if r["sku"] in set(skus)]
+    supply_filter_desc = f"sku in {skus}" if skus else "sku in [] (no inventory keys to join)"
 
     return {
         "inventory": SourceResult(

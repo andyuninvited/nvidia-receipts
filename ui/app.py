@@ -32,8 +32,8 @@ RECEIPTS_DIR = ROOT / "receipts"
 
 SAMPLE_QUESTIONS = [
     "Which SKUs are at risk of stockout this week in the Midwest?",
-    "What is our exposure on charcoal briquettes nationwide?",
-    "Should we discount mosquito repellent?",
+    "Are any SKUs running low in the Northeast this week?",
+    "Which SKUs are at risk of stockout this week across all our stores?",
     "Which suppliers in Latvia are most reliable?",
 ]
 

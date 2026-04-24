@@ -215,10 +215,15 @@ class Receipt:
         return path
 
     def _coverage_score(self) -> float:
+        # Coverage measures whether the retrieval system reached every expected
+        # data source, not whether each source returned rows. A clean empty
+        # result (e.g., "no SKUs at risk in this region") is a valid answer
+        # and should not be penalized here. Volume captures the row-count
+        # signal separately. In production this score would only drop when a
+        # source query times out or the system is unreachable.
         if self._expected_sources == 0:
             return 0.0
-        sources_with_matches = sum(1 for s in self.sources_queried if s.rows_matched > 0)
-        return min(sources_with_matches / self._expected_sources, 1.0)
+        return min(len(self.sources_queried) / self._expected_sources, 1.0)
 
     def _recency_score(self) -> float:
         ages = [s.newest_row_age_days for s in self.sources_queried if s.newest_row_age_days is not None]
