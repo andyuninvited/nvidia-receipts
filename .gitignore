@@ -1,0 +1,12 @@
+.env
+.env.local
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+.streamlit/secrets.toml
+.vercel/
+.claude/
+receipts/*.json
+!receipts/.gitkeep

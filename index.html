@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>NVIDIA Receipts: Audit-Grade Retail Agent</title>
+  <style>
+    :root {
+      --bg: #0e1116;
+      --panel: #161b22;
+      --panel-2: #1c2230;
+      --border: #2a313c;
+      --text: #e6e8eb;
+      --muted: #8b95a3;
+      --accent: #76b900;
+      --warn: #f5a524;
+      --bad: #f23e3e;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    a { color: var(--accent); text-decoration: none; }
+    code, pre { font-family: var(--mono); font-size: 12px; }
+    pre { background: var(--panel-2); border: 1px solid var(--border); padding: 12px; border-radius: 6px;
+      overflow: auto; margin: 0; white-space: pre-wrap; word-break: break-word; }
+    button { background: var(--accent); color: #000; border: 0; padding: 10px 16px; border-radius: 6px;
+      font-weight: 600; cursor: pointer; font-size: 14px; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); font-weight: 400; }
+    input[type=text], input[type=email], textarea {
+      background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+      border-radius: 6px; padding: 10px 12px; font: inherit; width: 100%;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    input[type=range] { width: 100%; }
+    .container { max-width: 1500px; margin: 0 auto; padding: 24px; }
+    header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; gap: 16px; flex-wrap: wrap; }
+    header h1 { font-size: 22px; margin: 0; font-weight: 600; }
+    header .sub { color: var(--muted); font-size: 13px; }
+    .pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+    .pill { background: var(--panel); border: 1px solid var(--border); color: var(--text);
+      padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 12px; }
+    .pill:hover { border-color: var(--accent); }
+    .composer { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; margin-bottom: 16px; }
+    .composer-row { display: flex; gap: 8px; align-items: flex-end; margin-top: 8px; }
+    .composer-row textarea { flex: 1; }
+    .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .controls label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .controls .val { font-family: var(--mono); font-size: 12px; color: var(--text); float: right; }
+    .grid { display: grid; grid-template-columns: 5fr 7fr; gap: 16px; }
+    @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+    .panel h2 { margin: 0 0 12px 0; font-size: 16px; font-weight: 600; }
+    .panel h3 { margin: 16px 0 8px 0; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .answer-body { white-space: pre-wrap; font-size: 14px; line-height: 1.6; }
+    .placeholder { color: var(--muted); font-style: italic; }
+    .receipt-id { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+    .badges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+    .badge { background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+    .badge .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .badge .value { font-size: 22px; font-weight: 600; font-family: var(--mono); }
+    .badge.pass .value { color: var(--accent); }
+    .badge.caveat .value { color: var(--warn); }
+    .badge.abstain .value { color: var(--bad); }
+    .badge .meta { color: var(--muted); font-size: 11px; margin-top: 2px; }
+    details { background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; }
+    details summary { padding: 10px 12px; cursor: pointer; font-size: 13px; user-select: none; }
+    details summary::-webkit-details-marker { color: var(--muted); }
+    details > div { padding: 0 12px 12px 12px; }
+    .chip { display: inline-block; padding: 2px 8px; background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 4px; font-family: var(--mono); font-size: 11px; margin-right: 4px; margin-top: 4px; }
+    .row-list { display: flex; flex-wrap: wrap; }
+    .small { font-size: 12px; color: var(--muted); }
+    .err { background: #2b1518; border: 1px solid var(--bad); padding: 12px; border-radius: 6px; color: #ffb1b1; }
+    .footer { margin-top: 24px; color: var(--muted); font-size: 12px; text-align: center; }
+    .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>NVIDIA Receipts</h1>
+        <div class="sub">Audit-grade retail agent on NIM. Every answer ships with a structured receipt.</div>
+      </div>
+      <div class="sub">
+        <a href="https://github.com/andyuninvited/nvidia-receipts" target="_blank">github</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://github.com/andyuninvited/nvidia-receipts/blob/main/ARCHITECTURE.md" target="_blank">architecture</a>
+      </div>
+    </header>
+
+    <div class="pills" id="pills"></div>
+
+    <div class="composer">
+      <textarea id="question" placeholder="Ask a retail-operator question..."></textarea>
+      <div class="composer-row">
+        <button id="run">Run agent</button>
+        <button class="ghost" id="clear">Clear</button>
+      </div>
+      <div class="controls">
+        <div>
+          <label>Caveat threshold <span class="val" id="caveatVal">0.65</span></label>
+          <input type="range" id="caveat" min="0" max="1" step="0.05" value="0.65" />
+        </div>
+        <div>
+          <label>Abstain threshold <span class="val" id="abstainVal">0.40</span></label>
+          <input type="range" id="abstain" min="0" max="1" step="0.05" value="0.40" />
+        </div>
+        <div>
+          <label>User identity</label>
+          <input type="text" id="user" value="me@andyrosic.com" />
+        </div>
+        <div>
+          <label>Reference date</label>
+          <input type="text" id="refdate" value="2026-04-23" placeholder="YYYY-MM-DD" />
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>Answer</h2>
+        <div id="answer" class="placeholder">Pick a sample question or type your own, then run the agent.</div>
+      </div>
+      <div class="panel">
+        <h2>Receipt</h2>
+        <div id="receipt" class="placeholder">The receipt will render here.</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Receipts are computed deterministically from data coverage, recency, volume, and query specificity. Confidence is not the model's self-report.
+    </div>
+  </div>
+
+  <script>
+    const SAMPLES = [
+      "Which SKUs are at risk of stockout this week in the Midwest?",
+      "What is our exposure on charcoal briquettes nationwide?",
+      "Should we discount mosquito repellent?",
+      "Which suppliers in Latvia are most reliable?"
+    ];
+
+    const $ = (id) => document.getElementById(id);
+
+    function renderPills() {
+      const wrap = $("pills");
+      wrap.innerHTML = "";
+      SAMPLES.forEach(q => {
+        const el = document.createElement("button");
+        el.className = "pill";
+        el.textContent = q;
+        el.onclick = () => { $("question").value = q; $("question").focus(); };
+        wrap.appendChild(el);
+      });
+    }
+
+    function band(conf, caveat, abstain) {
+      if (conf >= caveat) return { cls: "pass", label: "PASS" };
+      if (conf >= abstain) return { cls: "caveat", label: "CAVEAT" };
+      return { cls: "abstain", label: "ABSTAIN" };
+    }
+
+    function renderReceipt(r, caveat, abstain) {
+      const b = band(r.confidence, caveat, abstain);
+      const c = r.confidence_components || {};
+      const w = c.weights || {};
+      const sources = (r.sources_queried || []).map(s => `
+        <details>
+          <summary>${s.source} &middot; ${s.rows_matched} rows &middot; newest age ${s.newest_row_age_days ?? "n/a"} days</summary>
+          <div>
+            <div class="small">filter: <code>${escape(s.filter)}</code></div>
+            <div class="row-list">${(s.row_ids || []).map(id => `<span class="chip">${escape(id)}</span>`).join("")}</div>
+          </div>
+        </details>
+      `).join("");
+
+      $("receipt").innerHTML = `
+        <div class="receipt-id">${escape(r.receipt_id)} &middot; ${escape(r.timestamp)}</div>
+
+        <div class="badges">
+          <div class="badge ${b.cls}">
+            <div class="label">Confidence</div>
+            <div class="value">${r.confidence.toFixed(2)}</div>
+            <div class="meta">${b.label}</div>
+          </div>
+          <div class="badge">
+            <div class="label">Fallback</div>
+            <div class="value" style="font-size:14px">${escape(r.fallback?.path || "n/a")}</div>
+            <div class="meta">${escape(r.fallback?.reason || "")}</div>
+          </div>
+          <div class="badge">
+            <div class="label">Latency</div>
+            <div class="value">${r.duration_ms}<span style="font-size:12px"> ms</span></div>
+            <div class="meta">${escape(r.model?.provider || "")}</div>
+          </div>
+        </div>
+
+        <h3>Confidence breakdown</h3>
+        <pre>data_coverage         ${(c.data_coverage ?? 0).toFixed(2)}    weight ${w.data_coverage ?? "?"}
+recency               ${(c.recency ?? 0).toFixed(2)}    weight ${w.recency ?? "?"}
+volume                ${(c.volume ?? 0).toFixed(2)}    weight ${w.volume ?? "?"}
+query_specificity     ${(c.query_specificity ?? 0).toFixed(2)}
+coverage_subscore     ${(c.coverage_subscore ?? 0).toFixed(2)}
+specificity_multiplier ${(c.specificity_multiplier ?? 0).toFixed(2)}
+
+confidence = coverage_subscore * specificity_multiplier
+           = ${(c.coverage_subscore ?? 0).toFixed(2)} * ${(c.specificity_multiplier ?? 0).toFixed(2)}
+           = ${r.confidence.toFixed(3)}
+
+thresholds: caveat ${r.confidence_threshold?.caveat}  abstain ${r.confidence_threshold?.abstain}</pre>
+
+        <h3>Sources queried</h3>
+        ${sources || '<div class="small">No sources recorded.</div>'}
+
+        <h3>Prompt context</h3>
+        <div class="small">${r.prompt_context.char_count} chars &middot; SHA-256 <code>${escape((r.prompt_context.sha256 || "").slice(0, 24))}…</code></div>
+        <details><summary>Preview (first ${r.prompt_context.preview.length} chars)</summary><div><pre>${escape(r.prompt_context.preview)}</pre></div></details>
+
+        <h3>Model</h3>
+        <pre>provider:  ${escape(r.model?.provider || "")}
+model_id:  ${escape(r.model?.model_id || "")}
+endpoint:  ${escape(r.model?.endpoint || "")}</pre>
+
+        <h3>Identity</h3>
+        <pre>${escape(r.user)}</pre>
+
+        <button class="ghost" id="dl">Download receipt JSON</button>
+      `;
+      $("dl").onclick = () => {
+        const blob = new Blob([JSON.stringify(r, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `${r.receipt_id}.json`;
+        a.click();
+      };
+    }
+
+    function escape(s) {
+      return String(s ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[c]);
+    }
+
+    async function run() {
+      const question = $("question").value.trim();
+      if (!question) return;
+      const caveat = parseFloat($("caveat").value);
+      const abstain = parseFloat($("abstain").value);
+      const user = $("user").value.trim();
+      const refdate = $("refdate").value.trim();
+
+      $("answer").innerHTML = '<span class="spin"></span> Retrieving, prompting, emitting receipt...';
+      $("receipt").innerHTML = '<span class="placeholder">Waiting for response.</span>';
+      $("run").disabled = true;
+
+      try {
+        const res = await fetch("/api/agent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, user, reference_date: refdate || null, caveat, abstain })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          $("answer").innerHTML = `<div class="err">${escape(data.error || "Request failed")}</div>`;
+          $("receipt").innerHTML = '<span class="placeholder">No receipt.</span>';
+          return;
+        }
+        $("answer").className = "answer-body";
+        $("answer").textContent = data.answer;
+        renderReceipt(data.receipt, caveat, abstain);
+      } catch (err) {
+        $("answer").innerHTML = `<div class="err">${escape(err.message)}</div>`;
+      } finally {
+        $("run").disabled = false;
+      }
+    }
+
+    function bindThreshold(slider, label) {
+      $(slider).addEventListener("input", e => $(label).textContent = parseFloat(e.target.value).toFixed(2));
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderPills();
+      bindThreshold("caveat", "caveatVal");
+      bindThreshold("abstain", "abstainVal");
+      $("run").addEventListener("click", run);
+      $("clear").addEventListener("click", () => {
+        $("question").value = "";
+        $("answer").className = "placeholder";
+        $("answer").textContent = "Pick a sample question or type your own, then run the agent.";
+        $("receipt").className = "placeholder";
+        $("receipt").textContent = "The receipt will render here.";
+      });
+      $("question").addEventListener("keydown", e => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") run();
+      });
+      $("question").value = SAMPLES[0];
+    });
+  </script>
+</body>
+</html>

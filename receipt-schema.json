@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/andyrosic/nvidia-receipts/receipt-schema.json",
+  "title": "AgentResponseReceipt",
+  "description": "Audit-grade record of a single agent response. Designed so a retail risk committee can reconstruct exactly what data the agent saw, what context the model received, what confidence applied, and which fallback path triggered. One receipt per agent response. Immutable once written.",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "schema_version",
+    "timestamp",
+    "user",
+    "query",
+    "model",
+    "sources_queried",
+    "prompt_context",
+    "confidence",
+    "confidence_threshold",
+    "fallback",
+    "duration_ms",
+    "answer_summary"
+  ],
+  "properties": {
+    "receipt_id": {
+      "type": "string",
+      "description": "UUID v4. Primary key in the audit log."
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC ISO 8601 when the agent response was emitted."
+    },
+    "user": {
+      "type": "string",
+      "description": "Identity that issued the query. In production, this is an SSO subject; here it is an email."
+    },
+    "query": {
+      "type": "string",
+      "description": "Verbatim user question."
+    },
+    "model": {
+      "type": "object",
+      "required": ["provider", "model_id"],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["nvidia_nim", "stub"],
+          "description": "stub indicates the agent ran without a real NIM key. Receipts from stub responses are explicitly non-production."
+        },
+        "model_id": { "type": "string" },
+        "endpoint": { "type": "string" }
+      }
+    },
+    "sources_queried": {
+      "type": "array",
+      "description": "Every data source the retrieval layer touched, even if zero rows came back. Zero-match sources are still recorded so an auditor can verify nothing was hidden.",
+      "items": {
+        "type": "object",
+        "required": ["source", "filter", "rows_matched", "row_ids"],
+        "properties": {
+          "source": { "type": "string", "description": "File or table name." },
+          "filter": { "type": "string", "description": "Human-readable filter applied. In production, replace with a structured predicate." },
+          "rows_matched": { "type": "integer", "minimum": 0 },
+          "row_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Stable row identifiers. Lets auditors pull the exact rows months later."
+          },
+          "newest_row_age_days": {
+            "type": "number",
+            "description": "Age of the freshest row matched. Feeds the recency component of confidence."
+          }
+        }
+      }
+    },
+    "prompt_context": {
+      "type": "object",
+      "required": ["char_count", "preview", "sha256"],
+      "properties": {
+        "char_count": { "type": "integer" },
+        "preview": { "type": "string", "description": "First 800 characters of the context block sent to the model." },
+        "sha256": { "type": "string", "description": "SHA-256 of the full context block. Lets an auditor verify the prompt was not altered after the fact." }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Deterministic confidence computed from data coverage, recency, and volume. NOT model self-reported."
+    },
+    "confidence_threshold": {
+      "type": "object",
+      "required": ["caveat", "abstain"],
+      "properties": {
+        "caveat": { "type": "number", "minimum": 0, "maximum": 1 },
+        "abstain": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "confidence_components": {
+      "type": "object",
+      "description": "Breakdown of how the confidence number was computed. Every term is reproducible from the receipt alone. confidence = coverage_subscore * specificity_multiplier.",
+      "properties": {
+        "data_coverage": { "type": "number", "description": "Fraction of expected sources that returned at least one row." },
+        "recency": { "type": "number", "description": "1.0 if all matched rows within 14 days, decays linearly to 0.0 at 90 days." },
+        "volume": { "type": "number", "description": "min(total_rows_matched / target_rows, 1.0). target_rows = 10." },
+        "query_specificity": { "type": "number", "description": "Fraction of expected query signals (region, intent) the parser extracted. 0.0 means the question was vague enough to fall back to no filter." },
+        "coverage_subscore": { "type": "number", "description": "Weighted sum of data_coverage, recency, and volume." },
+        "specificity_multiplier": { "type": "number", "description": "Floor + (1 - floor) * query_specificity. Floor is 0.3, so a wholly vague question caps confidence at 30 percent of coverage_subscore." },
+        "weights": {
+          "type": "object",
+          "properties": {
+            "data_coverage": { "type": "number" },
+            "recency": { "type": "number" },
+            "volume": { "type": "number" }
+          }
+        }
+      }
+    },
+    "fallback": {
+      "type": "object",
+      "required": ["triggered", "path"],
+      "properties": {
+        "triggered": { "type": "boolean" },
+        "path": {
+          "type": "string",
+          "enum": ["none", "answer_with_caveat", "abstain_route_to_human"],
+          "description": "answer_with_caveat: returned an answer but flagged uncertainty inline. abstain_route_to_human: declined to answer and surfaced a queue ticket id."
+        },
+        "reason": { "type": "string" }
+      }
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Wall-clock time from query received to receipt emitted."
+    },
+    "answer_summary": {
+      "type": "string",
+      "description": "First 400 chars of the answer the agent returned. Full answer is in the audit log entry, not the receipt itself."
+    }
+  }
+}

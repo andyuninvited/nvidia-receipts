@@ -1,0 +1,50 @@
+row_id,sku,product_name,store_id,store_region,store_city,on_hand_units,reorder_point,last_inventory_check
+INV-1042-M217,SKU-1042,Patio Cushion 18in Cobalt,M-217,Midwest,Chicago,14,40,2026-04-22
+INV-1042-M218,SKU-1042,Patio Cushion 18in Cobalt,M-218,Midwest,Detroit,11,35,2026-04-22
+INV-1042-M219,SKU-1042,Patio Cushion 18in Cobalt,M-219,Midwest,Minneapolis,19,30,2026-04-21
+INV-2087-M217,SKU-2087,Charcoal Briquettes 20lb,M-217,Midwest,Chicago,22,60,2026-04-22
+INV-2087-M218,SKU-2087,Charcoal Briquettes 20lb,M-218,Midwest,Detroit,18,55,2026-04-22
+INV-2087-M219,SKU-2087,Charcoal Briquettes 20lb,M-219,Midwest,Minneapolis,27,50,2026-04-21
+INV-3155-M217,SKU-3155,Mosquito Repellent 6oz,M-217,Midwest,Chicago,8,35,2026-04-22
+INV-3155-M218,SKU-3155,Mosquito Repellent 6oz,M-218,Midwest,Detroit,6,30,2026-04-22
+INV-3155-M219,SKU-3155,Mosquito Repellent 6oz,M-219,Midwest,Minneapolis,12,25,2026-04-21
+INV-1042-M220,SKU-1042,Patio Cushion 18in Cobalt,M-220,Midwest,Indianapolis,68,30,2026-04-22
+INV-2087-M220,SKU-2087,Charcoal Briquettes 20lb,M-220,Midwest,Indianapolis,142,50,2026-04-22
+INV-3155-M220,SKU-3155,Mosquito Repellent 6oz,M-220,Midwest,Indianapolis,77,25,2026-04-22
+INV-1042-M221,SKU-1042,Patio Cushion 18in Cobalt,M-221,Midwest,Cleveland,54,30,2026-04-21
+INV-2087-M221,SKU-2087,Charcoal Briquettes 20lb,M-221,Midwest,Cleveland,118,50,2026-04-21
+INV-3155-M221,SKU-3155,Mosquito Repellent 6oz,M-221,Midwest,Cleveland,61,25,2026-04-21
+INV-1042-W301,SKU-1042,Patio Cushion 18in Cobalt,W-301,West,Seattle,82,30,2026-04-22
+INV-2087-W301,SKU-2087,Charcoal Briquettes 20lb,W-301,West,Seattle,99,50,2026-04-22
+INV-3155-W301,SKU-3155,Mosquito Repellent 6oz,W-301,West,Seattle,44,25,2026-04-22
+INV-1042-W302,SKU-1042,Patio Cushion 18in Cobalt,W-302,West,Portland,71,30,2026-04-21
+INV-2087-W302,SKU-2087,Charcoal Briquettes 20lb,W-302,West,Portland,108,50,2026-04-21
+INV-1042-W303,SKU-1042,Patio Cushion 18in Cobalt,W-303,West,Phoenix,46,30,2026-04-22
+INV-3155-W303,SKU-3155,Mosquito Repellent 6oz,W-303,West,Phoenix,38,25,2026-04-22
+INV-1042-S401,SKU-1042,Patio Cushion 18in Cobalt,S-401,South,Atlanta,93,30,2026-04-22
+INV-2087-S401,SKU-2087,Charcoal Briquettes 20lb,S-401,South,Atlanta,156,50,2026-04-22
+INV-3155-S401,SKU-3155,Mosquito Repellent 6oz,S-401,South,Atlanta,82,25,2026-04-22
+INV-1042-S402,SKU-1042,Patio Cushion 18in Cobalt,S-402,South,Dallas,77,30,2026-04-21
+INV-2087-S402,SKU-2087,Charcoal Briquettes 20lb,S-402,South,Dallas,134,50,2026-04-21
+INV-3155-S402,SKU-3155,Mosquito Repellent 6oz,S-402,South,Dallas,69,25,2026-04-21
+INV-1042-NE501,SKU-1042,Patio Cushion 18in Cobalt,NE-501,Northeast,Boston,58,30,2026-04-22
+INV-2087-NE501,SKU-2087,Charcoal Briquettes 20lb,NE-501,Northeast,Boston,87,50,2026-04-22
+INV-3155-NE501,SKU-3155,Mosquito Repellent 6oz,NE-501,Northeast,Boston,49,25,2026-04-22
+INV-1042-NE502,SKU-1042,Patio Cushion 18in Cobalt,NE-502,Northeast,New York,73,35,2026-04-21
+INV-2087-NE502,SKU-2087,Charcoal Briquettes 20lb,NE-502,Northeast,New York,114,55,2026-04-21
+INV-4001-M217,SKU-4001,Citronella Candle 9oz,M-217,Midwest,Chicago,52,25,2026-04-22
+INV-4001-M218,SKU-4001,Citronella Candle 9oz,M-218,Midwest,Detroit,48,25,2026-04-22
+INV-4001-M219,SKU-4001,Citronella Candle 9oz,M-219,Midwest,Minneapolis,41,25,2026-04-21
+INV-5012-M217,SKU-5012,Garden Hose 50ft,M-217,Midwest,Chicago,33,15,2026-04-22
+INV-5012-M218,SKU-5012,Garden Hose 50ft,M-218,Midwest,Detroit,29,15,2026-04-22
+INV-5012-M219,SKU-5012,Garden Hose 50ft,M-219,Midwest,Minneapolis,37,15,2026-04-21
+INV-6033-M217,SKU-6033,LED Solar Path Light 4pk,M-217,Midwest,Chicago,67,20,2026-04-22
+INV-6033-M218,SKU-6033,LED Solar Path Light 4pk,M-218,Midwest,Detroit,72,20,2026-04-22
+INV-7044-M217,SKU-7044,Sunscreen SPF50 8oz,M-217,Midwest,Chicago,89,30,2026-04-22
+INV-7044-M218,SKU-7044,Sunscreen SPF50 8oz,M-218,Midwest,Detroit,76,30,2026-04-22
+INV-7044-M219,SKU-7044,Sunscreen SPF50 8oz,M-219,Midwest,Minneapolis,68,30,2026-04-21
+INV-8055-M217,SKU-8055,Outdoor Bug Zapper,M-217,Midwest,Chicago,18,10,2026-04-22
+INV-8055-M218,SKU-8055,Outdoor Bug Zapper,M-218,Midwest,Detroit,21,10,2026-04-22
+INV-9066-S401,SKU-9066,Pool Chlorine Tabs 5lb,S-401,South,Atlanta,144,40,2026-04-22
+INV-9066-S402,SKU-9066,Pool Chlorine Tabs 5lb,S-402,South,Dallas,128,40,2026-04-21
+INV-9066-W303,SKU-9066,Pool Chlorine Tabs 5lb,W-303,West,Phoenix,167,40,2026-04-22

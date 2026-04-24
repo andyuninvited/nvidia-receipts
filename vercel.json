@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/agent.py": {
+      "includeFiles": "{src,data}/**",
+      "maxDuration": 60
+    }
+  }
+}

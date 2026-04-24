@@ -1,0 +1,16 @@
+row_id,sku,supplier_id,supplier_name,current_eta_days,prior_eta_days,supplier_status,signal_note,signal_date
+SIG-1042-SUP118-0421,SKU-1042,SUP-118,Lakeshore Outdoor Goods,21,7,delayed,Container vessel rerouted from Port of Long Beach to Oakland adds 14 days. Affects all Patio Cushion 18in colorways through May.,2026-04-21
+SIG-1042-SUP118-0415,SKU-1042,SUP-118,Lakeshore Outdoor Goods,7,7,on_time,Standard restock cadence confirmed.,2026-04-15
+SIG-2087-SUP207-0420,SKU-2087,SUP-207,Heartland Fuel Distributors,18,5,delayed,Mill fire at Greenville TN facility. Charcoal Briquettes 20lb production paused minimum 12 days. Allocation will favor existing PO holders.,2026-04-20
+SIG-2087-SUP207-0414,SKU-2087,SUP-207,Heartland Fuel Distributors,5,5,on_time,Weekly truckload departing Knoxville on schedule.,2026-04-14
+SIG-3155-SUP344-0422,SKU-3155,SUP-344,Cedar Valley Chemical,28,10,backorder,DEET supply constraint flagged by raw materials team. Mosquito Repellent 6oz on backorder until estimated 2026-05-20. Recommending substitution to SKU-3158 (3oz) as interim.,2026-04-22
+SIG-3155-SUP344-0418,SKU-3155,SUP-344,Cedar Valley Chemical,10,10,on_time,Routine fulfillment operating normally.,2026-04-18
+SIG-1042-SUP119-0419,SKU-1042,SUP-119,Coastal Patio Co,9,9,on_time,Backup supplier on standby. Limited capacity (max 200 units per store per month).,2026-04-19
+SIG-2087-SUP208-0418,SKU-2087,SUP-208,Midwest Charcoal Coop,12,12,on_time,Available as alternate but unit cost is 18 percent higher.,2026-04-18
+SIG-3155-SUP345-0420,SKU-3155,SUP-345,Greenfield Naturals,14,14,on_time,Plant-based formulation alternative. Higher SRP positioning.,2026-04-20
+SIG-4001-SUP118-0419,SKU-4001,SUP-118,Lakeshore Outdoor Goods,7,7,on_time,Citronella Candle 9oz inventory healthy across DCs.,2026-04-19
+SIG-5012-SUP422-0418,SKU-5012,SUP-422,Garden Pro Supply,9,9,on_time,Garden Hose 50ft seasonal allocation on track.,2026-04-18
+SIG-6033-SUP501-0420,SKU-6033,SUP-501,Brightway Outdoor,11,11,on_time,LED Solar Path Light shipments from Vietnam on schedule.,2026-04-20
+SIG-7044-SUP611-0419,SKU-7044,SUP-611,SunGuard Brands,6,6,on_time,Sunscreen SPF50 8oz core SKU. No constraints.,2026-04-19
+SIG-8055-SUP701-0421,SKU-8055,SUP-701,InsectShield Industries,15,15,on_time,Outdoor Bug Zapper restock confirmed.,2026-04-21
+SIG-9066-SUP812-0420,SKU-9066,SUP-812,Aqua Pure Chemical,8,8,on_time,Pool Chlorine Tabs 5lb season ramp on plan.,2026-04-20
