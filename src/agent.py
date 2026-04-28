@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Optional
 
 from .nim_client import ModelClient
-from .receipt import Receipt
+from .receipt import REVIEW_MARGIN_DEFAULT, Receipt
 from .retrieval import SourceResult, parse_question, retrieve
 
 SYSTEM_PROMPT = (
@@ -38,6 +38,7 @@ def run_agent(
     reference_date: Optional[date] = None,
     caveat_threshold: float = 0.65,
     abstain_threshold: float = 0.40,
+    review_margin: float = REVIEW_MARGIN_DEFAULT,
     client: Optional[ModelClient] = None,
 ) -> tuple[str, dict, Path]:
     client = client or ModelClient()
@@ -70,6 +71,7 @@ def run_agent(
         query_specificity=_query_specificity(parsed),
     )
     decision = receipt.decide_fallback()
+    receipt.evaluate_review_flag(margin=review_margin)
 
     if decision.path == "abstain_route_to_human":
         ticket = f"HUMAN-{receipt.receipt_id[:8].upper()}"

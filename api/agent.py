@@ -7,7 +7,8 @@ Wraps src.agent.run_agent. Body schema:
       "user": "<optional override>",
       "reference_date": "<YYYY-MM-DD optional>",
       "caveat": <optional float>,
-      "abstain": <optional float>
+      "abstain": <optional float>,
+      "review_margin": <optional float>
     }
 
 Response:
@@ -62,8 +63,9 @@ class handler(BaseHTTPRequestHandler):
         try:
             caveat = float(body.get("caveat") or os.environ.get("CONFIDENCE_CAVEAT_THRESHOLD", "0.65"))
             abstain = float(body.get("abstain") or os.environ.get("CONFIDENCE_ABSTAIN_THRESHOLD", "0.40"))
+            review_margin = float(body.get("review_margin") or os.environ.get("REVIEW_MARGIN_THRESHOLD", "0.15"))
         except ValueError:
-            self._respond(400, {"error": "caveat and abstain must be floats"})
+            self._respond(400, {"error": "caveat, abstain, and review_margin must be floats"})
             return
 
         try:
@@ -75,6 +77,7 @@ class handler(BaseHTTPRequestHandler):
                 reference_date=ref_date,
                 caveat_threshold=caveat,
                 abstain_threshold=abstain,
+                review_margin=review_margin,
             )
         except Exception as exc:
             self._respond(500, {"error": f"{type(exc).__name__}: {exc}"})

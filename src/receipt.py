@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 PREVIEW_CHARS = 800
 ANSWER_PREVIEW_CHARS = 400
 RECENCY_FULL_CREDIT_DAYS = 14
@@ -29,6 +29,7 @@ RECENCY_ZERO_CREDIT_DAYS = 90
 VOLUME_TARGET_ROWS = 10
 CONFIDENCE_WEIGHTS = {"data_coverage": 0.5, "recency": 0.3, "volume": 0.2}
 SPECIFICITY_FLOOR = 0.3
+REVIEW_MARGIN_DEFAULT = 0.15
 
 
 @dataclass
@@ -73,6 +74,18 @@ class FallbackDecision:
 
 
 @dataclass
+class ReviewFlag:
+    # The grey-zone signal. The fallback rule already permitted an answer with
+    # caveat, but the confidence sat close enough to the abstain line that a
+    # compliance reviewer should look at the rule itself, not just the answer.
+    # Distance is signed: positive means above abstain (the only case we flag).
+    triggered: bool
+    margin: float
+    distance_to_abstain: float
+    reason: str = ""
+
+
+@dataclass
 class Receipt:
     receipt_id: str
     schema_version: str
@@ -86,6 +99,7 @@ class Receipt:
     confidence_threshold: dict = field(default_factory=dict)
     confidence_components: Optional[ConfidenceComponents] = None
     fallback: Optional[FallbackDecision] = None
+    review_flag: Optional[ReviewFlag] = None
     duration_ms: int = 0
     answer_summary: str = ""
 
@@ -190,6 +204,32 @@ class Receipt:
             decision = FallbackDecision(triggered=False, path="none", reason="")
         self.fallback = decision
         return decision
+
+    def evaluate_review_flag(self, *, margin: float) -> ReviewFlag:
+        # Only flag the caveat band. PASS is high-confidence, ABSTAIN already
+        # routed to a human, so neither warrants the same compliance signal.
+        abstain = self.confidence_threshold["abstain"]
+        distance = round(self.confidence - abstain, 3)
+        is_caveat = self.fallback is not None and self.fallback.path == "answer_with_caveat"
+        if is_caveat and distance < margin:
+            flag = ReviewFlag(
+                triggered=True,
+                margin=margin,
+                distance_to_abstain=distance,
+                reason=(
+                    f"confidence {self.confidence} is only {distance} above abstain {abstain}; "
+                    f"within review margin {margin}. Compliance should review and refine the rule."
+                ),
+            )
+        else:
+            flag = ReviewFlag(
+                triggered=False,
+                margin=margin,
+                distance_to_abstain=distance,
+                reason="",
+            )
+        self.review_flag = flag
+        return flag
 
     def set_answer_summary(self, answer: str) -> None:
         self.answer_summary = answer[:ANSWER_PREVIEW_CHARS]

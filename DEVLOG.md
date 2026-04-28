@@ -2,27 +2,25 @@
 
 ## Working State
 
-**Current Task**: Shipped end-to-end. Live at https://nvidia-receipts.vercel.app/. Repo public at https://github.com/andyuninvited/nvidia-receipts. Awaiting demo recording and LinkedIn publish.
+**Current Task**: Shipped grey-zone review flag (schema 1.1.0). When a caveat-band answer lands within `review_margin` (default 0.15) of the abstain threshold, the receipt raises a compliance alert. Northeast clean-empty case (confidence 0.5, distance 0.10) is the headline demo for this signal.
 
 **Key Files**:
-- `src/receipt.py` - Receipt dataclass + deterministic confidence math (data_coverage * 0.5 + recency * 0.3 + volume * 0.2) gated by query_specificity multiplier
-- `src/agent.py` - Orchestration: parse, retrieve, populate receipt, score, decide fallback, call NIM or skip on abstain
-- `api/agent.py` - Vercel Function wrapping run_agent. POST /api/agent. CORS, /tmp receipts, env-driven defaults.
-- `public/index.html` - Static two-panel UI: answer left, receipt right, sample question pills, threshold sliders, download receipt JSON
-- `vercel.json` - Functions block with @vercel/python@4.3.0 runtime + includeFiles for src/ and data/
+- `src/receipt.py` - Receipt + ReviewFlag dataclass; evaluate_review_flag(margin) raises grey-zone alert when caveat answer is within margin of abstain. Schema bumped to 1.1.0.
+- `src/agent.py` - run_agent now takes review_margin (default REVIEW_MARGIN_DEFAULT=0.15); calls evaluate_review_flag after decide_fallback.
+- `api/agent.py` - Accepts review_margin in body, falls back to REVIEW_MARGIN_THRESHOLD env then 0.15.
+- `public/index.html` - New review-margin slider; red alert box renders at top of Receipt panel when review_flag.triggered.
+- `receipt-schema.json` - schema_version 1.1.0; review_flag object with triggered/margin/distance_to_abstain/reason.
 
 **Active Decisions**:
-- Confidence is deterministic, never LLM self-reported. Risk committee will not accept a model grading itself.
-- data_coverage measures whether the retrieval system reached every expected source, not whether each source returned rows. A clean empty result (0 SKUs at risk) is a valid answer at high coverage; volume captures the row-count signal separately.
-- Specificity multiplier with 0.3 floor punishes vague queries that pull full tables. Vague (Latvia) caps at 30 percent of coverage_subscore, which lands below abstain threshold.
-- Stub responder runs templated answers from retrieved evidence so reviewers can clone and run without credentials. Receipt records `provider="stub"` so audit logs never confuse stub with real model output.
-- Reference date pinned to 2026-04-23 in .env so recency math stays stable as the demo data ages.
-- Vercel native deployment chosen over Streamlit Community Cloud. Vercel is on Andy's stack and shipping serverless Python on Fluid Compute is on-brand for the platform-thinking thesis.
+- Grey zone is bounded by fallback path, not raw confidence. Only `answer_with_caveat` results can flag. PASS doesn't need review; ABSTAIN already routed to a human.
+- Default margin = 0.15 chosen so the existing CAVEAT demo (Northeast, confidence 0.5, abstain 0.40) flags out-of-the-box. With 0.10 margin it would not trigger; 0.20+ would over-fire.
+- Comparison is strict `<`. distance == margin does not flag. This keeps the upper edge of the grey zone clearly outside.
 
 **Next Steps**:
-1. Record 3-minute demo per `PUBLISH.md` script. Use the four sample question pills in order to demo PASS / CAVEAT / PASS-at-edge / ABSTAIN.
-2. Publish LinkedIn caption (recommended Option B in PUBLISH.md) Monday morning between 8 and 10 AM PT.
-3. Optional: send a direct message to NVIDIA recruiter or hiring manager pointing at the post.
+1. Smoke test the four sample questions: Midwest (PASS, no flag), Northeast (CAVEAT, flag triggers), Across all stores (PASS at edge, no flag), Latvia (ABSTAIN, no flag).
+2. Record 3-minute demo per `PUBLISH.md` script. Add a fifth beat showing the grey-zone alert on the Northeast case.
+3. Update PUBLISH.md captions to mention the compliance review flag.
+4. Optional: send a direct message to NVIDIA recruiter or hiring manager pointing at the post.
 
 **Blockers**: None.
 
@@ -37,6 +35,9 @@
 
 ### 2026-04-23 - Day 1 build (Claude Code session)
 Scaffolded full project end-to-end: receipt schema (JSON Schema 2020-12), 3 mock CSVs with a Midwest stockout story baked in (SKUs 1042 patio cushions, 2087 charcoal, 3155 mosquito repellent at stores M-217/218/219), receipt module with deterministic confidence (coverage + recency + volume + specificity multiplier), retrieval layer (region + stockout intent filter), NIM client with stub fallback, agent orchestration, CLI, Streamlit UI. Smoke tested all three confidence states (PASS at 1.0, ABSTAIN at 0.3 for vague Latvia query). Wrote README and ARCHITECTURE. Total session ~3 hours. Caught one real product issue mid-build: vague queries were producing full-table pulls at confidence 1.0, fixed by adding query_specificity term to the confidence calculation.
+
+### 2026-04-28 - Grey-zone review flag (schema 1.1.0)
+Added the compliance review signal Andy wanted: when a caveat answer lands within review_margin of the abstain line, the receipt raises a red alert. New ReviewFlag dataclass, evaluate_review_flag method, run_agent param, /api/agent body field, env var (REVIEW_MARGIN_THRESHOLD, default 0.15), UI slider, and a red-bordered alert block at the top of the Receipt panel. Schema bumped to 1.1.0; receipt-schema.json now defines review_flag. Bounded the trigger to fallback path == answer_with_caveat so PASS and ABSTAIN never raise a false alarm. Default margin 0.15 was chosen so the existing Northeast CAVEAT demo (confidence 0.5, abstain 0.40, distance 0.10) flags the alert without slider adjustment, which makes the grey-zone story demoable in one click.
 
 ### 2026-04-24 - Day 2 ship: Vercel deployment + receipts fix
 Pivoted UI from Streamlit to a Vercel-native deployment so the demo lives at a shareable URL on Andy's stack. Stripped pandas (saved ~50MB cold start), rewrote retrieval and stub responder against stdlib csv and list[dict]. Built `api/agent.py` Vercel Function (BaseHTTPRequestHandler, CORS, /tmp receipts) and a single static `public/index.html` (vanilla JS, two-panel, confidence breakdown, source row IDs as chips, expandable prompt preview, download receipt JSON). Pushed to https://github.com/andyuninvited/nvidia-receipts. First Vercel deploy errored: needed explicit `@vercel/python@4.3.0` runtime in vercel.json functions block and required `index.html` under `public/` not at the repo root. Fixed both. Got NIM key, verified live model call: Nemotron returned grounded answer with row-ID citations exactly as system prompt instructs and added an unprompted "Explicit Non-Answer for Clarity" section. Caught a second real product issue post-deploy: three of four sample questions hit ABSTAIN because (a) retrieval short-circuited sales/supply when inventory was empty and (b) data_coverage measured "sources with rows matched" not "sources successfully queried". Fixed both: removed the short-circuit, redefined coverage, replaced sample questions to demo all three bands with live NIM. Now 3 of 4 samples call NIM with visibly different receipts. Andy edited the homepage subtitle directly in GitHub mid-session; rebased cleanly. Total session ~2.5 hours.

@@ -26,7 +26,7 @@
     },
     "schema_version": {
       "type": "string",
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "timestamp": {
       "type": "string",
@@ -129,6 +129,17 @@
           "enum": ["none", "answer_with_caveat", "abstain_route_to_human"],
           "description": "answer_with_caveat: returned an answer but flagged uncertainty inline. abstain_route_to_human: declined to answer and surfaced a queue ticket id."
         },
+        "reason": { "type": "string" }
+      }
+    },
+    "review_flag": {
+      "type": "object",
+      "description": "Grey-zone compliance signal. Triggers when fallback was answer_with_caveat AND confidence sits within review_margin of the abstain threshold. The rule worked, but barely. Compliance teams use this signal to identify rules and thresholds that need refinement.",
+      "required": ["triggered", "margin", "distance_to_abstain"],
+      "properties": {
+        "triggered": { "type": "boolean" },
+        "margin": { "type": "number", "minimum": 0, "maximum": 1, "description": "Width of the grey zone above the abstain threshold." },
+        "distance_to_abstain": { "type": "number", "description": "confidence - abstain. Triggered when this is non-negative and below margin." },
         "reason": { "type": "string" }
       }
     },

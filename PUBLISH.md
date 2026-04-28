@@ -14,7 +14,7 @@ Open Streamlit on a clean browser, full screen. No music. Plain narration.
 
 ### Minute 1 — The problem (60 sec)
 
-> "Enterprise retail adoption of agentic AI does not stall on the model. It stalls at the risk committee. I have spent the last few weeks talking to retail product and ops leaders and the same three blockers keep coming up. First, audit-grade receipts. The risk team will not approve an answer they cannot reconstruct. Second, legacy coexistence. AS/400, SAP ECC, and ColdFusion are not getting replaced. Third, ROI math at 2 to 6 percent net margins. AI spend has to return 3 to 5x in 18 months. The platform that solves all three owns the category. This weekend I built the receipts piece on the NVIDIA NIM stack."
+> "Enterprise retail adoption of agentic AI does not stall on the model. It stalls at the risk committee. I have spent the last few weeks talking to retail product and ops leader friends and the same three blockers keep coming up. First, audit-grade receipts. The risk team will not approve an answer they cannot reconstruct. Second, legacy coexistence. Dinosaurs tech like AS/400, SAP ECC, and ColdFusion are not getting replaced. Third, ROI math at single-digit percent net margins. AI spend has to return 3 to 5x in 18 months. The platform that solves all three owns the category. This weekend I built the receipts piece on the NVIDIA NIM stack."
 
 ### Minute 2 — The walkthrough (75 sec)
 
@@ -38,7 +38,7 @@ Live Vercel URL on screen: https://nvidia-receipts.vercel.app/
 
 > "This pattern is not specific to stockout questions. The receipt layer sits between three NVIDIA components. NeMo Retriever populates sources queried. NIM populates the model block. NeMo Guardrails populates the fallback decision. Every NVIDIA Retail Blueprint, the Shopping Advisor, Personalized Recommendations, Customer Service, ships the model and the orchestration. None of them ship the receipt layer. That is the gap, and it is what unlocks production deployment in regulated retailers."
 
-> "Code is on GitHub, MIT licensed, runs in 10 minutes. Architecture doc walks through what production adds. Andy Rosic. Thanks for watching."
+> "Code is on GitHub, MIT licensed, runs in 10 minutes. Architecture doc walks through what production adds. I'm Andy Rosic. Thanks for watching."
 
 ---
 

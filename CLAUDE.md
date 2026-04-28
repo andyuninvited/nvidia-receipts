@@ -51,7 +51,7 @@ vercel.json         Functions block + includeFiles for src/ and data/
 
 ## Architecture
 
-Receipt is generated inline as the agent runs, not retroactively. Confidence is deterministic from four components: data_coverage (sources successfully queried), recency (max age of matched rows), volume (rows pulled), and query_specificity (parser signal extraction). Two thresholds gate behavior: caveat (0.65) and abstain (0.40). Below abstain the agent skips NIM entirely and routes to a queue ticket.
+Receipt is generated inline as the agent runs, not retroactively. Confidence is deterministic from four components: data_coverage (sources successfully queried), recency (max age of matched rows), volume (rows pulled), and query_specificity (parser signal extraction). Two thresholds gate behavior: caveat (0.65) and abstain (0.40). Below abstain the agent skips NIM entirely and routes to a queue ticket. A third signal, the review_flag, raises a compliance alert when a caveat answer landed within `review_margin` (default 0.15) of the abstain line. The rule worked but barely; that is exactly where compliance teams need to refine rules.
 
 Three downstream consumers read the receipt: risk and compliance (reproducibility), operations (triage), finance (cost attribution). Schema in `receipt-schema.json`. Full thesis in `ARCHITECTURE.md`.
 
@@ -81,3 +81,4 @@ Optional:
 - `REFERENCE_DATE` — `2026-04-23` (pin recency for stable demos)
 - `RECEIPT_USER` — defaults to `me@andyrosic.com`
 - `CONFIDENCE_CAVEAT_THRESHOLD` / `CONFIDENCE_ABSTAIN_THRESHOLD` — defaults 0.65 / 0.40
+- `REVIEW_MARGIN_THRESHOLD` — default 0.15. Grey-zone width above abstain. Caveat answers within this distance of abstain trigger a compliance review flag on the receipt.
