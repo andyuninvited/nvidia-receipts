@@ -357,7 +357,18 @@ endpoint:  ${escape(r.model?.endpoint || "")}</pre>
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ question, user, reference_date: refdate || null, caveat, abstain, review_margin: reviewMargin })
         });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (_) {
+          // Non-JSON body: a platform error page (e.g. a function timeout),
+          // not our handler. Surface it cleanly instead of a parse error.
+          const snippet = text.slice(0, 200).trim() || `HTTP ${res.status}`;
+          $("answer").innerHTML = `<div class="err">Server returned a non-JSON response (HTTP ${res.status}). This is usually a function timeout. Try a more specific query.<br><span class="small">${escape(snippet)}</span></div>`;
+          $("receipt").innerHTML = '<span class="placeholder">No receipt.</span>';
+          return;
+        }
         if (!res.ok) {
           $("answer").innerHTML = `<div class="err">${escape(data.error || "Request failed")}</div>`;
           $("receipt").innerHTML = '<span class="placeholder">No receipt.</span>';

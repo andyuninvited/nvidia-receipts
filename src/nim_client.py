@@ -16,6 +16,10 @@ from typing import Optional
 
 DEFAULT_MODEL = "nvidia/llama-3.3-nemotron-super-49b-v1"
 DEFAULT_BASE_URL = "https://integrate.api.nvidia.com/v1"
+# Kept comfortably under the Vercel function maxDuration (60s) so the call
+# always returns or raises in time for the handler to emit valid JSON. The
+# function timing out itself produces a non-JSON platform error page.
+NIM_TIMEOUT_SECONDS = 45.0
 
 
 @dataclass
@@ -48,12 +52,37 @@ class ModelClient:
     ) -> ModelResult:
         if self.provider == "stub":
             return self._stub_response(evidence or {})
-        return self._nim_call(system_prompt, user_prompt)
+        try:
+            return self._nim_call(system_prompt, user_prompt)
+        except Exception as exc:
+            # NIM was unreachable, errored, or ran past the timeout budget.
+            # Degrade to the deterministic stub so the response is always valid
+            # and within the function's time budget, and record honestly that
+            # the real model did not answer.
+            fallback = self._stub_response(evidence or {})
+            return ModelResult(
+                text=(
+                    f"[NIM fallback: the model call failed or timed out ({type(exc).__name__}). "
+                    "A deterministic answer computed from the retrieved rows follows.]\n\n"
+                    + fallback.text
+                ),
+                provider="stub",
+                model_id="deterministic-stub-v1 (nim-fallback)",
+                endpoint="local",
+            )
 
     def _nim_call(self, system_prompt: str, user_prompt: str) -> ModelResult:
         from openai import OpenAI
 
-        client = OpenAI(base_url=self.base_url, api_key=self.api_key)
+        # max_retries=0 is the important one: the SDK otherwise retries up to
+        # twice with backoff, which can silently stack past the function budget
+        # and turn one slow call into a platform timeout.
+        client = OpenAI(
+            base_url=self.base_url,
+            api_key=self.api_key,
+            timeout=NIM_TIMEOUT_SECONDS,
+            max_retries=0,
+        )
         completion = client.chat.completions.create(
             model=self.model,
             messages=[
