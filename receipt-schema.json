@@ -10,6 +10,8 @@
     "timestamp",
     "user",
     "query",
+    "security",
+    "answerability",
     "model",
     "sources_queried",
     "prompt_context",
@@ -26,7 +28,7 @@
     },
     "schema_version": {
       "type": "string",
-      "const": "1.1.0"
+      "const": "1.2.0"
     },
     "timestamp": {
       "type": "string",
@@ -40,6 +42,28 @@
     "query": {
       "type": "string",
       "description": "Verbatim user question."
+    },
+    "security": {
+      "type": "object",
+      "description": "Input-side prompt-injection scan, run before retrieval and before the model. A detected attempt sets fallback.path to blocked_injection and the model is never called.",
+      "required": ["injection_detected", "action"],
+      "properties": {
+        "injection_detected": { "type": "boolean" },
+        "action": { "type": "string", "enum": ["blocked", "none"] },
+        "matched_patterns": { "type": "array", "items": { "type": "string" }, "description": "Names of the injection patterns that fired." },
+        "note": { "type": "string" }
+      }
+    },
+    "answerability": {
+      "type": "object",
+      "description": "Whether the question maps to the agent's data domain at all. in_domain false routes to a human via fallback.path abstain_out_of_domain, recording the true reason rather than letting a low confidence score abstain for the wrong reason.",
+      "required": ["in_domain", "reason"],
+      "properties": {
+        "in_domain": { "type": "boolean" },
+        "reason": { "type": "string" },
+        "matched_ood_terms": { "type": "array", "items": { "type": "string" }, "description": "Out-of-domain terms detected, e.g. geographies the dataset does not hold." },
+        "matched_anchors": { "type": "array", "items": { "type": "string" }, "description": "In-domain entity terms detected in the question." }
+      }
     },
     "model": {
       "type": "object",
@@ -126,8 +150,8 @@
         "triggered": { "type": "boolean" },
         "path": {
           "type": "string",
-          "enum": ["none", "answer_with_caveat", "abstain_route_to_human"],
-          "description": "answer_with_caveat: returned an answer but flagged uncertainty inline. abstain_route_to_human: declined to answer and surfaced a queue ticket id."
+          "enum": ["none", "answer_with_caveat", "abstain_route_to_human", "abstain_out_of_domain", "blocked_injection"],
+          "description": "answer_with_caveat: returned an answer but flagged uncertainty inline. abstain_route_to_human: low confidence, declined and surfaced a queue ticket. abstain_out_of_domain: question outside the data domain, routed to human. blocked_injection: prompt-injection detected in input, model never called."
         },
         "reason": { "type": "string" }
       }

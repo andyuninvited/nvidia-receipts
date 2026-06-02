@@ -1,0 +1,79 @@
+{
+  "generated_at": "2026-06-02T17:42:37+00:00",
+  "total": 14,
+  "passed": 14,
+  "failed": 0,
+  "all_pass": true,
+  "cases": [
+    {
+      "name": "midwest_stockout_passes",
+      "status": "pass",
+      "detail": "path=none confidence=1.0 (expect none / 1.0)"
+    },
+    {
+      "name": "all_stores_stockout_passes",
+      "status": "pass",
+      "detail": "path=none confidence=0.65 (expect none / 0.65)"
+    },
+    {
+      "name": "in_domain_supplier_query_not_abstained",
+      "status": "pass",
+      "detail": "in_domain=True path=none (expect in-domain, not abstained)"
+    },
+    {
+      "name": "out_of_domain_geography_abstains",
+      "status": "pass",
+      "detail": "path=abstain_out_of_domain in_domain=False ood=['latvia']"
+    },
+    {
+      "name": "compound_geography_abstains",
+      "status": "pass",
+      "detail": "path=abstain_out_of_domain ood=['latvia'] (a known region must not rescue an OOD geography)"
+    },
+    {
+      "name": "wipe_context_blocked",
+      "status": "pass",
+      "detail": "detected=True patterns=['wipe_context']"
+    },
+    {
+      "name": "legit_restrictions_query_not_blocked",
+      "status": "pass",
+      "detail": "detected=False in_domain=True (legit retail phrasing must pass both guards)"
+    },
+    {
+      "name": "blocked_query_retrieves_no_sources",
+      "status": "pass",
+      "detail": "path=blocked_injection sources=0 ctx_chars=0 (blocked input must touch no data)"
+    },
+    {
+      "name": "no_anchor_question_abstains",
+      "status": "pass",
+      "detail": "path=abstain_out_of_domain in_domain=False (expect out-of-domain abstain)"
+    },
+    {
+      "name": "injection_override_blocked",
+      "status": "pass",
+      "detail": "detected=True path=blocked_injection patterns=['override_instructions', 'unconditional_directive']"
+    },
+    {
+      "name": "injection_role_spoof_blocked",
+      "status": "pass",
+      "detail": "detected=True patterns=['role_reassignment', 'prompt_disclosure']"
+    },
+    {
+      "name": "legit_query_not_flagged_as_injection",
+      "status": "pass",
+      "detail": "detected=False (legit query must not trip the injection scanner)"
+    },
+    {
+      "name": "receipt_carries_prompt_sha_and_schema",
+      "status": "pass",
+      "detail": "schema=1.2.0 sha_len=64 (expect 1.2.0 / 64)"
+    },
+    {
+      "name": "confidence_is_deterministic",
+      "status": "pass",
+      "detail": "run1=1.0 run2=1.0 (must be identical)"
+    }
+  ]
+}

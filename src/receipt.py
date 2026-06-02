@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-SCHEMA_VERSION = "1.1.0"
+SCHEMA_VERSION = "1.2.0"
 PREVIEW_CHARS = 800
 ANSWER_PREVIEW_CHARS = 400
 RECENCY_FULL_CREDIT_DAYS = 14
@@ -86,6 +86,26 @@ class ReviewFlag:
 
 
 @dataclass
+class SecurityCheckRecord:
+    # Input-side prompt-injection scan. Stamped before the model is ever called.
+    injection_detected: bool
+    action: str
+    matched_patterns: list[str] = field(default_factory=list)
+    note: str = ""
+
+
+@dataclass
+class AnswerabilityRecord:
+    # Whether the question maps to this agent's data domain at all. A clean
+    # "out of domain" is a different fact than a "low confidence" answer, and a
+    # reviewer needs to see which one fired.
+    in_domain: bool
+    reason: str
+    matched_ood_terms: list[str] = field(default_factory=list)
+    matched_anchors: list[str] = field(default_factory=list)
+
+
+@dataclass
 class Receipt:
     receipt_id: str
     schema_version: str
@@ -93,6 +113,8 @@ class Receipt:
     user: str
     query: str
     model: ModelInfo
+    security: Optional[SecurityCheckRecord] = None
+    answerability: Optional[AnswerabilityRecord] = None
     sources_queried: list[SourceQueried] = field(default_factory=list)
     prompt_context: Optional[PromptContext] = None
     confidence: float = 0.0
@@ -146,6 +168,22 @@ class Receipt:
             )
         )
 
+    def set_security(self, *, injection_detected: bool, action: str, matched_patterns: list[str], note: str) -> None:
+        self.security = SecurityCheckRecord(
+            injection_detected=injection_detected,
+            action=action,
+            matched_patterns=matched_patterns,
+            note=note,
+        )
+
+    def set_answerability(self, *, in_domain: bool, reason: str, matched_ood_terms: list[str], matched_anchors: list[str]) -> None:
+        self.answerability = AnswerabilityRecord(
+            in_domain=in_domain,
+            reason=reason,
+            matched_ood_terms=matched_ood_terms,
+            matched_anchors=matched_anchors,
+        )
+
     def set_prompt_context(self, full_text: str) -> None:
         self.prompt_context = PromptContext(
             char_count=len(full_text),
@@ -186,8 +224,27 @@ class Receipt:
         )
         return self.confidence
 
-    def decide_fallback(self) -> FallbackDecision:
+    def decide_fallback(self, *, blocked: bool = False, out_of_domain: bool = False) -> FallbackDecision:
         thresholds = self.confidence_threshold
+        # Guards override the confidence math. A blocked injection or an
+        # out-of-domain question never reaches the model regardless of how the
+        # numbers landed, and the receipt records the real reason.
+        if blocked:
+            decision = FallbackDecision(
+                triggered=True,
+                path="blocked_injection",
+                reason="prompt-injection attempt detected in input; model call refused",
+            )
+            self.fallback = decision
+            return decision
+        if out_of_domain:
+            decision = FallbackDecision(
+                triggered=True,
+                path="abstain_out_of_domain",
+                reason="question falls outside the agent's data domain; routed to human",
+            )
+            self.fallback = decision
+            return decision
         if self.confidence < thresholds["abstain"]:
             decision = FallbackDecision(
                 triggered=True,

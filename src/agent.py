@@ -17,9 +17,11 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
 
+from .domain import check_domain
 from .nim_client import ModelClient
 from .receipt import REVIEW_MARGIN_DEFAULT, Receipt
 from .retrieval import SourceResult, parse_question, retrieve
+from .security import scan_injection
 
 SYSTEM_PROMPT = (
     "You are a retail operations assistant. Answer the operator's question using ONLY the data "
@@ -53,6 +55,54 @@ def run_agent(
     )
 
     parsed = parse_question(question)
+
+    # Guards run before retrieval and before the model. The receipt records
+    # both checks whether or not they fire, so an auditor sees they ran.
+    security = scan_injection(question)
+    receipt.set_security(
+        injection_detected=security.injection_detected,
+        action=security.action,
+        matched_patterns=security.matched_patterns,
+        note=security.note,
+    )
+    domain = check_domain(parsed)
+    receipt.set_answerability(
+        in_domain=domain.in_domain,
+        reason=domain.reason,
+        matched_ood_terms=domain.matched_ood_terms,
+        matched_anchors=domain.matched_anchors,
+    )
+
+    ticket = f"HUMAN-{receipt.receipt_id[:8].upper()}"
+
+    # A failed guard short-circuits before retrieval and before the model. We
+    # deliberately do NOT query any source: an injection attempt or an
+    # out-of-domain question must leave an empty sources_queried list, so the
+    # receipt cannot be misread as "the agent worked over real data."
+    if security.injection_detected or not domain.in_domain:
+        receipt.set_prompt_context("")
+        receipt.confidence_threshold = {"caveat": caveat_threshold, "abstain": abstain_threshold}
+        decision = receipt.decide_fallback(
+            blocked=security.injection_detected,
+            out_of_domain=not domain.in_domain,
+        )
+        receipt.evaluate_review_flag(margin=review_margin)
+        if decision.path == "blocked_injection":
+            answer = (
+                "[BLOCKED] A prompt-injection attempt was detected in the input "
+                f"({', '.join(security.matched_patterns)}). The question was not sent to the model "
+                "and no data was retrieved. The attempt is recorded in the receipt for audit."
+            )
+        else:
+            answer = (
+                f"[ABSTAIN] {domain.reason} No in-domain sources were queried. Routed to a human "
+                f"reviewer (queue ticket {ticket}). The decision is recorded in the receipt."
+            )
+        receipt.set_answer_summary(answer)
+        receipt_dict = receipt.finalize()
+        path = receipt.write(receipts_dir)
+        return answer, receipt_dict, path
+
     sources = retrieve(parsed, data_dir, reference_date=reference_date)
 
     for src in sources.values():
@@ -74,7 +124,6 @@ def run_agent(
     receipt.evaluate_review_flag(margin=review_margin)
 
     if decision.path == "abstain_route_to_human":
-        ticket = f"HUMAN-{receipt.receipt_id[:8].upper()}"
         answer = (
             f"[ABSTAIN] Confidence {receipt.confidence} fell below the abstain threshold "
             f"{abstain_threshold}. This query has been routed to a human reviewer "
