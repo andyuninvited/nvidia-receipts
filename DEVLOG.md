@@ -2,7 +2,7 @@
 
 ## Working State
 
-**Current Task**: Shipped the agentic-trust update (schema 1.2.0): (1) input prompt-injection guard that blocks before the model is called, (2) honest out-of-domain answerability check, (3) a golden-case eval harness that writes a public pass/fail badge. Built to strengthen the demo as a job-search proof point for agentic-security / eval-framework roles (SecurityScorecard). 10/10 eval cases passing.
+**Current Task**: Shipped and deployed the agentic-trust update (schema 1.2.0), a NIM timeout/fallback fix, and UI polish. Demo is live and tested. 14 eval cases + 1 fallback test passing (15 total under pytest; badge reads 14/14).
 
 **Key Files**:
 - `src/security.py` - NEW. scan_injection(question) returns SecurityCheck. 7 conservative regex patterns (override, role-reassign, new-directive, prompt-disclosure, system-role-spoof, guardrail-bypass, unconditional-directive). Detection sets fallback.path = blocked_injection; model is never called.
@@ -27,7 +27,9 @@
 **Blockers**: None.
 
 **Gotchas**:
-- Eval cases pin reference_date 2026-04-23 so confidence is reproducible (Midwest=1.0/PASS, all-stores=0.65/PASS). Data dates are ~2026-04-21/22; a different reference date shifts recency and breaks the exact-value assertions.
+- Eval cases pin reference_date 2026-04-23 internally (eval_cases.py REFERENCE_DATE) so confidence is reproducible (Midwest=1.0/PASS, all-stores=0.65/PASS) regardless of the UI default. Changing the UI reference date does NOT affect the badge.
+- The UI reference-date default is now 2026-06-01. Because data is dated ~2026-04-21/22, recency drops (~40-day age, recency ~0.62) and bands shift vs the old 2026-04-23 default: Midwest still PASS (0.886), Northeast still CAVEAT+review-flag (0.5), all-stores moved PASS->CAVEAT (0.576). Bump the data dates or the UI default together if a clean PASS-at-edge demo is wanted again.
+- NIM latency on the all-stores query swings 21s to >45s. The 45s client timeout + max_retries=0 keeps the call inside the 60s Vercel budget; a slow call degrades to the deterministic stub (provider=stub, model_id "...nim-fallback") rather than a non-JSON timeout page.
 - Injection guard runs on the raw question only (input-side). Output-side validation (e.g. cited-row-ID verification) is NOT yet implemented; that's held item #3.
 - macOS ships Python 3.9 by default; use `/opt/homebrew/bin/python3.13` for the venv.
 - Vercel `functions` block in vercel.json requires explicit `runtime: "@vercel/python@4.3.0"` or it errors with "doesn't match any Serverless Functions inside the api directory".
@@ -39,6 +41,9 @@
 
 ### 2026-06-02 - Agentic-trust update (schema 1.2.0): injection guard, domain check, eval harness
 Shipped three on-thesis features to make the demo land harder for agentic-security / eval-framework roles. (1) Input prompt-injection guard (`src/security.py`): 7 conservative regex patterns; a hit sets fallback.path=blocked_injection and the model is never called. (2) Answerability / out-of-domain check (`src/domain.py`): foreign geography with no in-domain region, or no in-domain anchor at all, routes to abstain_out_of_domain with the true reason recorded (fixes the Latvia query, which previously abstained for "low confidence" via the specificity floor rather than for being out of domain). (3) Golden-case eval harness (`tests/`): 9 cases + a determinism check, run_eval.py writes public/eval-summary.json, UI header shows a live "eval: 10/10 passing" badge. Receipt schema bumped to 1.2.0 with security + answerability objects and two new fallback paths. UI gained "Attack the agent:" adversarial pills plus red injection-block and amber out-of-domain alerts. Both guards verified end-to-end via CLI (real NIM for in-domain, blocked/abstained for adversarial). All 10 eval cases green under both run_eval and pytest. Not yet committed/pushed - awaiting Andy's go.
+
+### 2026-06-02 - NIM timeout fix + UI polish (post-deploy)
+Fixed a production bug: the all-stores query returned a client-side "is not valid JSON" error because the real NIM call (latency 21s to >45s) blew past Vercel's 60s function budget, returning a non-JSON platform error page. Root cause was the OpenAI SDK's silent 2x retry stacking latency. Fix: pinned a 45s client timeout, set max_retries=0, and degrade to the deterministic stub on any NIM failure so the API always returns valid JSON in budget (added test_nim_fallback.py to lock it). UI also now parses the response defensively and shows a clean message on any non-JSON body. Then a round of UI polish per Andy: the adversarial pills now start on their own line under the sample pills with a flex break, the label reads "Try attacking the agent:", attack pills carry the same grey outline as normal pills and only turn red on hover (matching the green-on-hover pattern), and the UI reference-date default moved to 2026-06-01 (which shifts the all-stores sample from PASS to CAVEAT as recency decays).
 
 ### 2026-04-23 - Day 1 build (Claude Code session)
 Scaffolded full project end-to-end: receipt schema (JSON Schema 2020-12), 3 mock CSVs with a Midwest stockout story baked in (SKUs 1042 patio cushions, 2087 charcoal, 3155 mosquito repellent at stores M-217/218/219), receipt module with deterministic confidence (coverage + recency + volume + specificity multiplier), retrieval layer (region + stockout intent filter), NIM client with stub fallback, agent orchestration, CLI, Streamlit UI. Smoke tested all three confidence states (PASS at 1.0, ABSTAIN at 0.3 for vague Latvia query). Wrote README and ARCHITECTURE. Total session ~3 hours. Caught one real product issue mid-build: vague queries were producing full-table pulls at confidence 1.0, fixed by adding query_specificity term to the confidence calculation.

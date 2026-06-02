@@ -91,8 +91,8 @@
     .guard-alert.domain { background: #2b2410; border-color: var(--warn); color: #ffe9c2; }
     .guard-alert.domain .title { color: var(--warn); }
     .guard-alert.domain .meta { color: #ffcf80; }
-    .pill.attack { border-color: var(--bad); color: #ff9c9c; }
-    .pill.attack:hover { border-color: var(--bad); background: #2b1518; }
+    .pill.attack:hover { border-color: var(--bad); }
+    .pills-break { flex-basis: 100%; height: 0; }
     .pills-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; align-self: center; margin-right: 4px; }
     .eval-badge { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 3px 8px; border-radius: 999px;
       border: 1px solid var(--border); background: var(--panel); color: var(--muted); }
@@ -147,7 +147,7 @@
         </div>
         <div>
           <label>Reference date</label>
-          <input type="text" id="refdate" value="2026-04-23" placeholder="YYYY-MM-DD" />
+          <input type="text" id="refdate" value="2026-06-01" placeholder="YYYY-MM-DD" />
         </div>
       </div>
     </div>
@@ -199,9 +199,12 @@
       const wrap = $("pills");
       wrap.innerHTML = "";
       SAMPLES.forEach(q => wrap.appendChild(makePill(q, "pill")));
+      const brk = document.createElement("div");
+      brk.className = "pills-break";
+      wrap.appendChild(brk);
       const label = document.createElement("span");
       label.className = "pills-label";
-      label.textContent = "Attack the agent:";
+      label.textContent = "Try attacking the agent:";
       wrap.appendChild(label);
       ADVERSARIAL.forEach(q => wrap.appendChild(makePill(q, "pill attack")));
     }

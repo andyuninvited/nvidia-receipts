@@ -18,11 +18,14 @@ This prototype is the receipts piece. The same pattern generalizes across every 
 ## What it does
 
 - Accepts a retail-operator question.
+- Scans the input for prompt-injection attempts first. A detected attempt is blocked before retrieval and before the model is ever called, touches zero sources, and is recorded on the receipt.
+- Checks answerability: a question outside the data domain (e.g. a geography the dataset does not hold) routes to human review with the true reason recorded, rather than answering over irrelevant rows.
 - Retrieves matching rows from three mock CSV sources (inventory, sales, supply signals).
 - Builds a context block, computes a deterministic confidence score, and decides whether to call the model, caveat the answer, or abstain and route to human review.
-- Calls a NIM-hosted Nemotron model through the OpenAI-compatible NIM endpoint. Falls back to a deterministic stub when no API key is set so the demo still runs.
+- Calls a NIM-hosted Nemotron model through the OpenAI-compatible NIM endpoint. Falls back to a deterministic stub when no API key is set, or when the live call times out, so the demo always returns a valid response.
 - Emits a receipt JSON for every response, written to `receipts/`.
-- Renders both panels in a Streamlit UI.
+- Ships a golden-case evaluation harness (`python -m tests.run_eval`) that writes `public/eval-summary.json`, surfaced as a live pass/fail badge in the UI header.
+- Renders the answer and receipt panels in a Vercel-hosted vanilla-JS UI (a Streamlit UI is also available locally).
 
 ## Quickstart (local)
 
