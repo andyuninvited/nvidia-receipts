@@ -10,3 +10,5 @@ venv/
 .claude/
 receipts/*.json
 !receipts/.gitkeep
+.vercel
+.env*

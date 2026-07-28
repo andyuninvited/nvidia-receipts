@@ -2,9 +2,13 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/agent.py": {
-      "runtime": "@vercel/python@4.3.0",
       "includeFiles": "{src,data}/**",
       "maxDuration": 60
     }
-  }
+  },
+  "routes": [
+    { "src": "^/$", "dest": "/index.html" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index" }
+  ]
 }
