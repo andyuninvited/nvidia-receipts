@@ -35,10 +35,19 @@
     textarea { min-height: 70px; resize: vertical; }
     input[type=range] { width: 100%; }
     .container { max-width: 1500px; margin: 0 auto; padding: 24px; }
-    header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; gap: 16px; flex-wrap: wrap; }
+    header { position: relative; text-align: center; margin-bottom: 8px; }
     header h1 { font-size: 22px; margin: 0; font-weight: 600; }
     header .sub { color: var(--muted); font-size: 13px; }
-    .pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+    header .subtitle { margin: 6px auto 0; max-width: 720px; }
+    .top-right-nav { position: absolute; top: 0; right: 0; white-space: nowrap; }
+    @media (max-width: 700px) { .top-right-nav { position: static; display: block; margin-top: 10px; } }
+    .pill-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    @media (max-width: 760px) { .pill-boxes { grid-template-columns: 1fr; } }
+    .pill-box { border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+    .pill-box.sample { border-color: var(--accent); }
+    .pill-box.attack { border-color: var(--bad); }
+    .pill-box h2 { margin: 0 0 14px 0; font-size: 16px; font-weight: 700; }
+    .pills { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 0; }
     .pill { background: var(--panel); border: 1px solid var(--border); color: var(--text);
       padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 12px; }
     .pill:hover { border-color: var(--accent); }
@@ -92,8 +101,6 @@
     .guard-alert.domain .title { color: var(--warn); }
     .guard-alert.domain .meta { color: #ffcf80; }
     .pill.attack:hover { border-color: var(--bad); }
-    .pills-break { flex-basis: 100%; height: 0; }
-    .pills-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; align-self: center; margin-right: 4px; }
     .eval-badge { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 3px 8px; border-radius: 999px;
       border: 1px solid var(--border); background: var(--panel); color: var(--muted); }
     .eval-badge.ok { border-color: var(--accent); color: var(--accent); }
@@ -107,20 +114,27 @@
 <body>
   <div class="container">
     <header>
-      <div>
-        <h1>NVIDIA Receipts</h1>
-        <div class="sub">Audit-grade retail agent on NIM. Every answer ships with a structured receipt. For more on why this exists, click "architecture" in the top right.</div>
-      </div>
-      <div class="sub">
+      <div class="sub top-right-nav">
         <a id="evalBadge" class="eval-badge" href="/eval-summary.json" target="_blank" title="Golden-case evaluation suite">eval: loading</a>
         &nbsp;&middot;&nbsp;
         <a href="https://github.com/andyuninvited/nvidia-receipts" target="_blank">github</a>
         &nbsp;&middot;&nbsp;
         <a href="https://github.com/andyuninvited/nvidia-receipts/blob/main/ARCHITECTURE.md" target="_blank">architecture</a>
       </div>
+      <h1>NVIDIA Receipts</h1>
+      <div class="sub subtitle">Audit-grade retail agent on NIM. Every answer ships with a structured receipt. For more on why this exists, click "architecture" in the top right.</div>
     </header>
 
-    <div class="pills" id="pills"></div>
+    <div class="pill-boxes">
+      <div class="pill-box sample">
+        <h2>Try a sample LLM query</h2>
+        <div class="pills" id="pillsSample"></div>
+      </div>
+      <div class="pill-box attack">
+        <h2>Try attacking the agent</h2>
+        <div class="pills" id="pillsAttack"></div>
+      </div>
+    </div>
 
     <div class="composer">
       <textarea id="question" placeholder="Ask a retail-operator question..."></textarea>
@@ -196,17 +210,13 @@
     }
 
     function renderPills() {
-      const wrap = $("pills");
-      wrap.innerHTML = "";
-      SAMPLES.forEach(q => wrap.appendChild(makePill(q, "pill")));
-      const brk = document.createElement("div");
-      brk.className = "pills-break";
-      wrap.appendChild(brk);
-      const label = document.createElement("span");
-      label.className = "pills-label";
-      label.textContent = "Try attacking the agent:";
-      wrap.appendChild(label);
-      ADVERSARIAL.forEach(q => wrap.appendChild(makePill(q, "pill attack")));
+      const sampleWrap = $("pillsSample");
+      sampleWrap.innerHTML = "";
+      SAMPLES.forEach(q => sampleWrap.appendChild(makePill(q, "pill")));
+
+      const attackWrap = $("pillsAttack");
+      attackWrap.innerHTML = "";
+      ADVERSARIAL.forEach(q => attackWrap.appendChild(makePill(q, "pill attack")));
     }
 
     async function loadEvalBadge() {
