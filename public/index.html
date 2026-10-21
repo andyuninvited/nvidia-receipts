@@ -65,6 +65,13 @@
     .panel h2 { margin: 0 0 12px 0; font-size: 16px; font-weight: 600; }
     .panel h3 { margin: 16px 0 8px 0; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
     .answer-body { white-space: pre-wrap; font-size: 14px; line-height: 1.6; }
+    .answer-body.md { white-space: normal; }
+    .answer-body.md p { margin: 0 0 10px; }
+    .answer-body.md ul { margin: 0 0 10px; padding-left: 20px; }
+    .answer-body.md li { margin: 2px 0; }
+    .answer-body.md .table-wrap { overflow-x: auto; margin: 0 0 10px; }
+    .answer-body.md table { border-collapse: collapse; font-size: 12.5px; }
+    .answer-body.md th, .answer-body.md td { border: 1px solid rgba(255,255,255,0.12); padding: 4px 8px; text-align: left; vertical-align: top; }
     .placeholder { color: var(--muted); font-style: italic; }
     .receipt-id { font-family: var(--mono); font-size: 11px; color: var(--muted); }
     .badges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
@@ -345,6 +352,35 @@ endpoint:  ${escape(r.model?.endpoint || "")}</pre>
       };
     }
 
+    // Model answers arrive as light markdown (bold, bullets, paragraphs). Everything is
+    // escaped first, so only the tags added here can reach the page.
+    function renderAnswer(text) {
+      const inline = s => s
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/`([^`]+)`/g, "<code>$1</code>");
+      const bullet = /^\s*[-*] /;
+      return escape(text).split(/\n\s*\n/).map(block => {
+        // Group consecutive lines by kind: bullets become a list, pipe rows a table,
+        // anything else a paragraph.
+        const kindOf = l => bullet.test(l) ? "list" : /^\s*\|/.test(l) ? "table" : "text";
+        const groups = [];
+        block.split("\n").filter(l => l.trim()).forEach(l => {
+          const kind = kindOf(l);
+          const last = groups[groups.length - 1];
+          if (last && last.kind === kind) last.lines.push(l);
+          else groups.push({ kind, lines: [l] });
+        });
+        const cells = l => l.trim().replace(/^\||\|$/g, "").split("|").map(c => inline(c.trim()));
+        return groups.map(g => {
+          if (g.kind === "list") return `<ul>${g.lines.map(l => `<li>${inline(l.replace(bullet, ""))}</li>`).join("")}</ul>`;
+          if (g.kind === "text") return `<p>${g.lines.map(inline).join("<br>")}</p>`;
+          const [head, ...rest] = g.lines.filter(l => !/^\s*\|?[\s:|-]+\|?\s*$/.test(l));
+          return `<div class="table-wrap"><table><thead><tr>${cells(head).map(c => `<th>${c}</th>`).join("")}</tr></thead>` +
+            `<tbody>${rest.map(r => `<tr>${cells(r).map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+        }).join("");
+      }).join("");
+    }
+
     function escape(s) {
       return String(s ?? "").replace(/[&<>"']/g, c => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -387,8 +423,8 @@ endpoint:  ${escape(r.model?.endpoint || "")}</pre>
           $("receipt").innerHTML = '<span class="placeholder">No receipt.</span>';
           return;
         }
-        $("answer").className = "answer-body";
-        $("answer").textContent = data.answer;
+        $("answer").className = "answer-body md";
+        $("answer").innerHTML = renderAnswer(data.answer);
         renderReceipt(data.receipt, caveat, abstain);
       } catch (err) {
         $("answer").innerHTML = `<div class="err">${escape(err.message)}</div>`;
