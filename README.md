@@ -57,7 +57,7 @@ The repo is Vercel-native. The static `index.html` is served as the homepage and
 npm i -g vercel
 vercel link
 vercel env add NVIDIA_API_KEY              # paste your NIM key, all environments
-vercel env add NVIDIA_MODEL                # e.g. nvidia/llama-3.3-nemotron-super-49b-v1
+vercel env add NVIDIA_MODEL                # e.g. nvidia/nemotron-3.5-lightning-30b-a3b
 vercel env add REFERENCE_DATE              # 2026-04-23 (optional, stabilizes recency)
 vercel deploy --prod
 ```
@@ -120,7 +120,7 @@ The Northeast clean-empty case is the demo-defining one: the model honestly says
   ],
   "model": {
     "provider": "nvidia_nim",
-    "model_id": "nvidia/llama-3.3-nemotron-super-49b-v1",
+    "model_id": "nvidia/nemotron-3.5-lightning-30b-a3b",
     "endpoint": "https://integrate.api.nvidia.com/v1"
   }
 }

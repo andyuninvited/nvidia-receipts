@@ -14,7 +14,7 @@ import os
 from dataclasses import dataclass
 from typing import Optional
 
-DEFAULT_MODEL = "nvidia/llama-3.3-nemotron-super-49b-v1"
+DEFAULT_MODEL = "nvidia/nemotron-3.5-lightning-30b-a3b"
 DEFAULT_BASE_URL = "https://integrate.api.nvidia.com/v1"
 # Kept comfortably under the Vercel function maxDuration (60s) so the call
 # always returns or raises in time for the handler to emit valid JSON. The
@@ -91,6 +91,10 @@ class ModelClient:
             ],
             temperature=0.2,
             max_tokens=600,
+            # Nemotron 3.x reasons by default and the reasoning tokens count against
+            # max_tokens, which left the answer empty. The receipt records the answer,
+            # so reasoning stays off.
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
         )
         text = completion.choices[0].message.content or ""
         return ModelResult(

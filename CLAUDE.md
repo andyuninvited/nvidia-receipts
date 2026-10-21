@@ -11,7 +11,7 @@ Built as a portfolio prototype for the NVIDIA JR2015305 Director, Product Platfo
 
 - Python 3.13 (CLI + Vercel Function), stdlib at runtime (csv, http.server, json, dataclasses)
 - openai SDK against integrate.api.nvidia.com (NIM hosted, free tier)
-- Default model: nvidia/llama-3.3-nemotron-super-49b-v1 (env-overridable)
+- Default model: nvidia/nemotron-3.5-lightning-30b-a3b (env-overridable)
 - Streamlit for local dev UI; vanilla HTML + JS for production UI
 - Deployment: Vercel (api/agent.py as Fluid Compute Python function + public/index.html static)
 
@@ -77,7 +77,7 @@ Three downstream consumers read the receipt: risk and compliance (reproducibilit
 - `NVIDIA_API_KEY` — `nvapi-...` from build.nvidia.com (free tier)
 
 Optional:
-- `NVIDIA_MODEL` — defaults to `nvidia/llama-3.3-nemotron-super-49b-v1`
+- `NVIDIA_MODEL` — defaults to `nvidia/nemotron-3.5-lightning-30b-a3b`
 - `REFERENCE_DATE` — `2026-04-23` (pin recency for stable demos)
 - `RECEIPT_USER` — defaults to `me@andyrosic.com`
 - `CONFIDENCE_CAVEAT_THRESHOLD` / `CONFIDENCE_ABSTAIN_THRESHOLD` — defaults 0.65 / 0.40
