@@ -2,30 +2,33 @@
 
 ## Working State
 
-**Current Task**: Homepage and demo redesign (issue #5, branch feat/homepage-redesign). PR open, not merged, not deployed to production. Goal: a security-minded reviewer understands what it does, why it matters, and how to try it in about two minutes.
+**Current Task**: Rebrand from "NVIDIA Receipts" to "Rosic Receipts" (issue #7, branch chore/rebrand-rosic-receipts). PR open, not merged, not deployed to production. Live domain is now https://rosic-receipts.vercel.app (set up by Andy; the old NVIDIA-named domain redirects).
 
 **Key Files**:
-- `public/index.html` - Rebuilt single page: sticky nav with eval badge and demo CTA, hero with an animated receipt plate (values from receipts/ac9dddc9...json), request-path toggles (clean, thin evidence, outside the data, injection), confidence explainer sliders using the ARCHITECTURE.md formula, guided demo scenarios, receipt panel with in-browser verify, raw JSON toggle, limits section, footer disclaimer.
-- `api/agent.py`, `src/`, `receipt-schema.json`, `vercel.json` - Untouched.
+- `public/index.html` - Title, OG/Twitter meta, og:url, wordmark, hero eyebrow, request-path stage 05, limits copy, and footer rebranded. Footer carries the one NVIDIA mention: "Runs on NVIDIA NIM (Nemotron). Not affiliated with or endorsed by NVIDIA."
+- `README.md`, `ARCHITECTURE.md`, `PUBLISH.md` - Retail Blueprint and NeMo component framing replaced with neutral "enterprise retail agents" wording. Thesis, legacy coexistence, ROI math, and hosted NIM technical notes kept.
+- `CLAUDE.md` - Renamed, NVIDIA application context replaced with the current purpose.
+- `ui/app.py`, `src/cli.py` - Streamlit title, sidebar, and CLI description renamed.
 
 **Active Decisions**:
-- Structure and interaction patterns ported from the Rosicodex site redesign (PRs 9 and 14); palette kept exactly (same nine CSS variables and alert colors), system fonts kept, no Rosicodex copy or tokens.
-- No hash-chain tamper demo: receipts here are not hash-chained (ARCHITECTURE lists that as a production addition), so showing one would overclaim. The real verify step is a confidence recompute from the receipt's components, plus a WebCrypto SHA-256 check of the prompt when the full prompt fits in the preview (guard paths hash the empty string, which proves nothing was sent).
-- Scenario cards auto-run on click. Thresholds, identity, and reference date moved under an advanced toggle; all still sent to the API.
-- Guard-path receipts (confidence_components null) now say no scoring ran instead of printing zeros.
-- Footer adds "Independent portfolio prototype by Andy Rosic. Not affiliated with or endorsed by NVIDIA."
+- Env vars (`NVIDIA_API_KEY`, `NVIDIA_MODEL`, `NVIDIA_BASE_URL`), code identifiers, the NIM endpoint, and `model.provider = "nvidia_nim"` stay. They are accurate and renaming them would change behavior or the receipt schema.
+- GitHub repo name, `pyproject.toml` package name, and the schema `$id` stay `nvidia-receipts` until the repo itself is renamed (recommended in the PR).
+- Historical DEVLOG entries are left as written.
 
 **Next Steps**:
-1. Andy reviews the Vercel preview, merges the PR, then confirm production renders and a live NIM run still works.
+1. Andy reviews the Vercel preview and the footer wording, then merges.
+2. Optionally rename the GitHub repo to `rosic-receipts`, then update repo URLs, `pyproject.toml`, and the schema `$id` in one follow-up.
 
 **Blockers**: None.
 
 **Gotchas**:
-- Verify recompute uses rounded components, so Midwest shows 0.885 vs 0.886; the UI notes components are stored to three decimals.
-- Local check used a scratch dev server (static public/ plus api.agent handler) with NVIDIA_API_KEY unset, so answers came from the stub. No NIM credits spent.
-- Earlier gotchas still hold: UI reference date 2026-06-01 puts Midwest at 0.886 PASS and Northeast at 0.50 CAVEAT with review flag; injection guard is input-side only.
+- The `--accent` color (#76b900) is NVIDIA green. Left as is; a palette change is a design call for Andy.
+- Local check ran a scratch dev server with NVIDIA_API_KEY unset, so answers came from the stub. No NIM credits spent.
 
 ## Session Archive
+
+### 2026-11-09 - Rebrand to Rosic Receipts (issue #7)
+Renamed every user-facing "NVIDIA Receipts" to "Rosic Receipts" and pointed all live-demo URLs at rosic-receipts.vercel.app. Removed the NVIDIA Retail Blueprint and NeMo component pitch from the README, ARCHITECTURE.md, PUBLISH.md, and the site in favor of neutral enterprise retail agent wording; PUBLISH.md no longer references the NVIDIA application. The site keeps one factual footer line that it runs on NVIDIA NIM (Nemotron), plus the not-affiliated clause. No code, env var, API, or receipt schema changes. Verified with pytest (15 passed), the stub-mode eval harness (14/14), and a local server checked in headless Chrome at 1440px and 390px with no horizontal overflow.
 
 ### 2026-11-09 - Homepage and demo redesign (issue #5)
 Rebuilt public/index.html for a two-minute walkthrough aimed at security-minded reviewers, porting structure and interaction quality from the Rosicodex redesign while keeping this site's palette. Added hero with animated receipt plate, request-path toggles, confidence explainer, guided scenarios, in-browser verify, raw JSON toggle, limits section, OG and Twitter meta, and prefers-reduced-motion handling. pytest 15 passed. Playwright with system Chrome at 1440px and 390px: all scenarios and pills render receipts, verify matches, no horizontal scroll, reduced motion disables the animation.
@@ -66,7 +69,7 @@ Pivoted UI from Streamlit to a Vercel-native deployment so the demo lives at a s
 - Retrieval is keyword + region only. SKU and product-name extraction would let questions like "What is our exposure on charcoal briquettes?" land in caveat or pass rather than abstain.
 - No formal JSON Schema validation step in CI. Add `jsonschema` validation against `receipt-schema.json` in a pre-commit hook before merging to main.
 - Stub responder duplicates some logic the real model would otherwise produce. Extract a shared "evidence formatter" if the demo grows beyond a one-shot prototype.
-- Vercel function regions are unset (defaults to iad1). For a real customer demo, pin to `sfo1` for lowest latency from NVIDIA HQ.
+- Vercel function regions are unset (defaults to iad1). For a real customer demo, pin to the region closest to the audience (for example, `sfo1` for the Bay Area).
 - The "Across all stores" sample lands at exactly confidence 0.65 (the caveat threshold). Comparison is `<`, so it scrapes through as PASS. Engineering one sample to land cleanly inside the CAVEAT band with default thresholds (e.g., a query that drops volume by half) would make the demo cleaner.
 - Receipts are written to `/tmp/receipts` on Vercel, which is per-instance and not persisted. For audit log persistence, the function should write receipts to Vercel Blob, S3, or a row in Neon/Supabase. The receipt JSON in the response body is enough for the demo but not for production.
 - Receipt download in the UI exports the JSON returned in the response. There is no server-side audit log endpoint to list historical receipts. Add `/api/receipts/list` for production.

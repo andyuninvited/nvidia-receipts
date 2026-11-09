@@ -33,7 +33,7 @@ def _parse_reference_date(value: str | None) -> date | None:
 def main(argv: list[str] | None = None) -> int:
     load_dotenv(ROOT / ".env")
 
-    parser = argparse.ArgumentParser(description="NVIDIA Receipts demo agent")
+    parser = argparse.ArgumentParser(description="Rosic Receipts demo agent")
     parser.add_argument("question", help="The retail-operator question to answer")
     parser.add_argument(
         "--user",
