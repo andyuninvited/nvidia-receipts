@@ -2,29 +2,30 @@
 
 ## Working State
 
-**Current Task**: Rebrand from "NVIDIA Receipts" to "Rosic Receipts" (issue #7, branch chore/rebrand-rosic-receipts). PR open, not merged, not deployed to production. Live domain is now https://rosic-receipts.vercel.app (set up by Andy; the old NVIDIA-named domain redirects).
+**Current Task**: Make the interactive demo the visual centerpiece (issue #10, branch feat/light-demo-section). PR open, not merged, not deployed to production.
 
 **Key Files**:
-- `public/index.html` - Title, OG/Twitter meta, og:url, repo links, accent palette, wordmark, hero eyebrow ("Audit-grade agentic AI for the enterprise"), request-path stage 05, limits copy, and footer rebranded. Footer carries the one NVIDIA mention: "Runs on NVIDIA NIM (Nemotron). Not affiliated with or endorsed by NVIDIA."
-- `README.md`, `ARCHITECTURE.md`, `PUBLISH.md` - Retail Blueprint and NeMo component framing replaced with neutral "enterprise retail agents" wording. Thesis, legacy coexistence, ROI math, and hosted NIM technical notes kept.
-- `CLAUDE.md` - Renamed, NVIDIA application context replaced with the current purpose.
-- `ui/app.py`, `src/cli.py` - Streamlit title, sidebar, and CLI description renamed.
+- `public/index.html` - The #demo section is now a light, off-white band (#eef0f3) with a #4cc2ff top rule, inset shadows at the dark transitions, larger padding, and a larger heading. All light colors are CSS variables scoped to `.demo`, so the rest of the page is untouched.
 
 **Active Decisions**:
-- Env vars (`NVIDIA_API_KEY`, `NVIDIA_MODEL`, `NVIDIA_BASE_URL`), code identifiers, the NIM endpoint, and `model.provider = "nvidia_nim"` stay. They are accurate and renaming them would change behavior or the receipt schema.
-- Andy renamed the GitHub repo to `andyuninvited/rosic-receipts`. Repo URLs, the `pyproject.toml` and `uv.lock` package name, and the schema `$id` now use `rosic-receipts`. Nothing imports the package name; code imports `src`.
-- Historical DEVLOG entries are left as written.
+- Inside the light section the accent is a darker blue (#0a5f96, 5.95:1 on the band, white button text 6.8:1). #4cc2ff stays as the brand accent elsewhere and as the section's top rule.
+- Light-safe states scoped to `.demo`: good #146c2e, warn #8a5a00, bad #c3202b, each with a tint (#e6f4ea, #fdf3dc, #fdecec). Confidence badges take the tint of their band so pass, caveat, and abstain read at a glance. Alerts use darker ink on tints (#6e4700, #9f1823).
+- Code blocks (confidence math, model, identity, raw JSON) stay dark as inset panels (#0e1116, 15.41:1).
+- Nav "Try the demo" and hero "Try to break it" already anchor to #demo, so no new CTA was added.
 
 **Next Steps**:
-1. Andy reviews the Vercel preview and the footer wording, then merges.
+1. Andy reviews the Vercel preview and merges.
 
 **Blockers**: None.
 
 **Gotchas**:
-- Accent moved off NVIDIA green (#76b900) to cool blue `--accent: #4cc2ff` (9.43:1 on #0e1116; black button text 10.47:1). Pass and good states split into `--good: #3fb950` (7.44:1) so green still means pass and `--bad` red still means fail. Yellow was ruled out because `--warn` amber marks caveats. The accent is one CSS variable if Andy wants to change it.
-- Local check ran a scratch dev server with NVIDIA_API_KEY unset, so answers came from the stub. No NIM credits spent.
+- The stub-mode blocked receipt shows the configured NVIDIA model_id and endpoint in the model block. That is existing receipt data, not new copy.
+- Local check ran a scratch dev server with NVIDIA_API_KEY unset. No NIM credits spent.
 
 ## Session Archive
+
+### 2026-11-09 - Light demo section (issue #10)
+Flipped the #demo section to a light off-white band so the interactive demo reads as the product. Scoped light variants of the surface, text, accent, good, warn, and bad variables to `.demo`, added state tints for confidence badges and alerts, kept code blocks as dark insets, and enlarged the heading and padding. Verified with pytest (15 passed), the stub-mode eval (14/14), and Playwright screenshots of idle, answered, caveat, and blocked states at 1440px and 390px with no horizontal overflow and reduced motion on.
 
 ### 2026-11-09 - Rebrand to Rosic Receipts (issue #7)
 Renamed every user-facing "NVIDIA Receipts" to "Rosic Receipts" and pointed all live-demo URLs at rosic-receipts.vercel.app. Removed the NVIDIA Retail Blueprint and NeMo component pitch from the README, ARCHITECTURE.md, PUBLISH.md, and the site in favor of neutral enterprise retail agent wording; PUBLISH.md no longer references the NVIDIA application. The site keeps one factual footer line that it runs on NVIDIA NIM (Nemotron), plus the not-affiliated clause. Follow-up commit per Andy's review: repo URLs moved to the renamed andyuninvited/rosic-receipts repo, package name and schema $id updated, a stray reference to a separate project removed from the DEVLOG, hero eyebrow broadened to the enterprise, and the NVIDIA-green accent replaced with a cool blue plus a separate green for pass states. No code, env var, API, or receipt schema changes. Verified with pytest (15 passed), the stub-mode eval harness (14/14), and a local server checked in headless Chrome at 1440px and 390px with no horizontal overflow.

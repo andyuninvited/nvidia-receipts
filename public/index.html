@@ -249,6 +249,35 @@
       border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* demo: light centerpiece, colors scoped to the section */
+    .demo {
+      --bg: #ffffff; --panel: #ffffff; --panel-2: #f6f7f9; --border: #d5dae1;
+      --text: #111418; --muted: #4b5563; --accent: #0a5f96;
+      --good: #146c2e; --warn: #8a5a00; --bad: #c3202b;
+      --good-tint: #e6f4ea; --warn-tint: #fdf3dc; --warn-ink: #6e4700; --bad-tint: #fdecec; --bad-ink: #9f1823;
+      color-scheme: light; background: #eef0f3; color: var(--text); padding: 104px 0 112px;
+      border-top: 4px solid #4cc2ff; border-bottom: 0;
+      box-shadow: inset 0 28px 36px -30px rgba(0,0,0,.45), inset 0 -28px 36px -30px rgba(0,0,0,.45);
+    }
+    .demo .h2 { font-size: clamp(32px, 4.6vw, 54px); line-height: 1.05; letter-spacing: -0.02em; max-width: 18em; margin-bottom: 18px; }
+    .demo .lede { font-size: 17px; }
+    .demo .scenario, .demo .composer, .demo .panel, .demo .pill { box-shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08); }
+    .demo .scenario[aria-pressed="true"] { box-shadow: 0 0 0 1px var(--accent), 0 4px 12px rgba(16,24,40,.10); }
+    .demo .scenario.attack[aria-pressed="true"] { box-shadow: 0 0 0 1px var(--bad), 0 4px 12px rgba(16,24,40,.10); }
+    .demo .btn.solid { color: #fff; }
+    .demo .btn.solid:hover { filter: brightness(1.15); }
+    .demo input[type=text], .demo textarea { background: #fff; border-color: #7d8695; }
+    .demo textarea::placeholder { color: #6b7280; }
+    .demo pre { background: #0e1116; color: #e6e8eb; border-color: #0e1116; }
+    .demo .answer-body.md th, .demo .answer-body.md td { border-color: var(--border); }
+    .demo .badge.pass { background: var(--good-tint); border-color: var(--good); }
+    .demo .badge.caveat { background: var(--warn-tint); border-color: var(--warn); }
+    .demo .badge.abstain { background: var(--bad-tint); border-color: var(--bad); }
+    .demo .err, .demo .review-alert, .demo .guard-alert.blocked { background: var(--bad-tint); color: var(--bad-ink); }
+    .demo .review-alert .meta, .demo .guard-alert.blocked .meta { color: var(--bad-ink); }
+    .demo .guard-alert.domain { background: var(--warn-tint); color: var(--warn-ink); }
+    .demo .guard-alert.domain .meta { color: var(--warn-ink); }
+
     /* limits */
     .limits { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
     .limits > div { border: 1px solid var(--border); border-radius: 8px; padding: 20px; background: var(--bg); }
@@ -276,6 +305,7 @@
       .nav { position: static; }
       html { scroll-padding-top: 0; }
       .band { padding: 56px 0; }
+      .demo { padding: 72px 0 80px; }
       .hero { padding: 40px 0 56px; gap: 32px; }
       .wrap { padding-left: 16px; padding-right: 16px; }
       .path, .scenarios { grid-template-columns: minmax(0, 1fr); }
@@ -402,7 +432,7 @@
     </div>
   </section>
 
-  <section class="band alt" id="demo">
+  <section class="band demo" id="demo">
     <div class="wrap">
       <p class="eyebrow">Live demo</p>
       <h2 class="h2">Run the agent. Then try to break it.</h2>
