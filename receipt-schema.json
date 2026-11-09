@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/andyrosic/nvidia-receipts/receipt-schema.json",
+  "$id": "https://github.com/andyuninvited/rosic-receipts/receipt-schema.json",
   "title": "AgentResponseReceipt",
   "description": "Audit-grade record of a single agent response. Designed so a retail risk committee can reconstruct exactly what data the agent saw, what context the model received, what confidence applied, and which fallback path triggered. One receipt per agent response. Immutable once written.",
   "type": "object",

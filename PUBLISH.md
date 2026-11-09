@@ -3,8 +3,8 @@
 Two artifacts: the 3-minute demo script and the LinkedIn caption draft. Both pitch the receipt layer for enterprise retail agents to security, fintech, and AI product audiences.
 
 - Live demo URL: https://rosic-receipts.vercel.app/
-- Repo: https://github.com/andyuninvited/nvidia-receipts
-- Architecture writeup: https://github.com/andyuninvited/nvidia-receipts/blob/main/ARCHITECTURE.md
+- Repo: https://github.com/andyuninvited/rosic-receipts
+- Architecture writeup: https://github.com/andyuninvited/rosic-receipts/blob/main/ARCHITECTURE.md
 
 ---
 
@@ -53,7 +53,7 @@ Enterprise retail adoption of agentic AI stalls at the risk committee, not the m
 The receipt is the artifact the risk committee actually signs off on. It is what unlocks production deployment in regulated retailers, and I think it is the missing primitive in enterprise retail agents.
 
 Live demo: https://rosic-receipts.vercel.app/
-Code and architecture writeup explaining why receipts are a platform primitive, not an SDK feature: https://github.com/andyuninvited/nvidia-receipts
+Code and architecture writeup explaining why receipts are a platform primitive, not an SDK feature: https://github.com/andyuninvited/rosic-receipts
 
 If you work on agentic platforms in retail, I would love to compare notes.
 
@@ -67,7 +67,7 @@ I built a weekend prototype that makes the receipt a first-class artifact. Every
 
 This is the piece I think is missing from enterprise retail agents. The receipt sits between the retriever, the model endpoint, and the guardrails policy engine. It is what gets a project past compliance and into production in retailers that run 2 to 6 percent net margins.
 
-Code, architecture writeup, and a 3-minute walkthrough: https://rosic-receipts.vercel.app/  (repo: https://github.com/andyuninvited/nvidia-receipts)
+Code, architecture writeup, and a 3-minute walkthrough: https://rosic-receipts.vercel.app/  (repo: https://github.com/andyuninvited/rosic-receipts)
 
 ### Option C — Provocative
 
@@ -75,13 +75,13 @@ Confidence scores from LLMs are a compliance failure mode.
 
 A model marking its own paper is not an audit trail. It is a tautology. So this weekend I built a retail agent where confidence is computed deterministically from observable properties of the retrieval, not asked of the model. Every response ships with a structured receipt that a risk committee can actually sign off on.
 
-The receipt is the platform primitive that unlocks regulated retail. Repo and architecture writeup: https://rosic-receipts.vercel.app/  (repo: https://github.com/andyuninvited/nvidia-receipts)
+The receipt is the platform primitive that unlocks regulated retail. Repo and architecture writeup: https://rosic-receipts.vercel.app/  (repo: https://github.com/andyuninvited/rosic-receipts)
 
 ---
 
 ## Posting checklist
 
-- [x] Push to public GitHub `andyuninvited/nvidia-receipts` (MIT)
+- [x] Push to public GitHub `andyuninvited/rosic-receipts` (MIT)
 - [x] Deploy live at https://rosic-receipts.vercel.app/ (Vercel + NIM key in env vars)
 - [x] Update README links at the top of this file
 - [x] Verify all 4 sample questions exercise PASS / CAVEAT / PASS-at-edge / ABSTAIN with live NIM

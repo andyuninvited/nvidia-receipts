@@ -21,7 +21,8 @@
       --border: #2a313c;
       --text: #e6e8eb;
       --muted: #8b95a3;
-      --accent: #76b900;
+      --accent: #4cc2ff;
+      --good: #3fb950;
       --warn: #f5a524;
       --bad: #f23e3e;
       --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
@@ -69,7 +70,7 @@
     .nav-links .btn { min-height: 38px; padding: 0 14px; }
     .eval-badge { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 3px 9px; border-radius: 999px;
       border: 1px solid var(--border); background: var(--panel); color: var(--muted); }
-    .eval-badge.ok { border-color: var(--accent); color: var(--accent); }
+    .eval-badge.ok { border-color: var(--good); color: var(--good); }
     .eval-badge.bad { border-color: var(--bad); color: var(--bad); }
     .eval-badge:hover { text-decoration: none; }
 
@@ -96,9 +97,9 @@
     .field:last-child { border-bottom: 0; }
     .field span:first-child { color: var(--muted); flex: 0 0 auto; }
     .field span:last-child { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-    .field .ok { color: var(--accent); }
+    .field .ok { color: var(--good); }
     .veil { position: absolute; inset: 0; background: repeating-linear-gradient(135deg, var(--panel-2) 0 6px, var(--bg) 6px 12px); animation: veil 8s cubic-bezier(.6,0,.3,1) infinite; }
-    .scanline { position: absolute; left: 0; right: 0; height: 2px; background: var(--accent); box-shadow: 0 0 18px 4px rgba(118,185,0,.5); animation: sweep 8s cubic-bezier(.6,0,.3,1) infinite; }
+    .scanline { position: absolute; left: 0; right: 0; height: 2px; background: var(--accent); box-shadow: 0 0 18px 4px rgba(76,194,255,.5); animation: sweep 8s cubic-bezier(.6,0,.3,1) infinite; }
     .veil-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; color: var(--muted); animation: label 8s linear infinite; }
     .fields .field { opacity: 0; animation: fieldIn 8s linear infinite; }
     .fields .field:nth-child(2) { animation-delay: .2s; } .fields .field:nth-child(3) { animation-delay: .4s; }
@@ -122,16 +123,16 @@
     .stage b { display: block; margin: 6px 0 6px; font-size: 15px; }
     .stage p { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
     .stage code { color: var(--text); background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
-    .stage.reached { border-color: var(--accent); }
+    .stage.reached { border-color: var(--good); }
     .stage.stopped { border-color: var(--bad); background: #2b1518; }
     .stage.stopped.warn { border-color: var(--warn); background: #2b2410; }
     .stage.skipped { opacity: 0.35; }
     .stage .mark { position: absolute; top: 12px; right: 12px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
-    .stage.reached .mark { color: var(--accent); }
+    .stage.reached .mark { color: var(--good); }
     .stage.stopped .mark { color: var(--bad); }
     .stage.stopped.warn .mark { color: var(--warn); }
     .stage.skipped .mark { color: var(--muted); }
-    .outcome { border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; background: var(--bg); padding: 16px 18px; }
+    .outcome { border: 1px solid var(--border); border-left: 4px solid var(--good); border-radius: 6px; background: var(--bg); padding: 16px 18px; }
     .outcome.bad { border-left-color: var(--bad); }
     .outcome.warn { border-left-color: var(--warn); }
     .outcome .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
@@ -148,10 +149,10 @@
     input[type=range] { width: 100%; accent-color: var(--accent); }
     .meter { border: 1px solid var(--border); border-radius: 8px; background: var(--bg); padding: 20px; }
     .meter .score { font-family: var(--mono); font-size: 48px; font-weight: 600; line-height: 1; }
-    .meter .score.pass { color: var(--accent); } .meter .score.caveat { color: var(--warn); } .meter .score.abstain { color: var(--bad); }
+    .meter .score.pass { color: var(--good); } .meter .score.caveat { color: var(--warn); } .meter .score.abstain { color: var(--bad); }
     .meter .bandlabel { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; margin: 6px 0 16px; color: var(--muted); }
     .bar { position: relative; height: 10px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--border); margin: 8px 0 26px; }
-    .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--accent); transition: width .2s, background .2s; }
+    .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: var(--good); transition: width .2s, background .2s; }
     .bar .tick { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); }
     .bar .tick span { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
     .meter pre { font-size: 12px; }
@@ -165,7 +166,7 @@
     .scenario[aria-pressed="true"] { border-color: var(--accent); background: var(--panel-2); }
     .scenario.attack[aria-pressed="true"] { border-color: var(--bad); }
     .scenario .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
-    .tag.pass { color: var(--accent); } .tag.caveat { color: var(--warn); } .tag.bad { color: var(--bad); }
+    .tag.pass { color: var(--good); } .tag.caveat { color: var(--warn); } .tag.bad { color: var(--bad); }
     .scenario b { font-size: 15px; }
     .scenario span.q { font-size: 13px; color: var(--muted); }
     .more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 16px; }
@@ -206,7 +207,7 @@
     .badge { background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 12px; min-width: 0; }
     .badge .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
     .badge .value { font-size: 22px; font-weight: 600; font-family: var(--mono); overflow-wrap: anywhere; }
-    .badge.pass .value { color: var(--accent); }
+    .badge.pass .value { color: var(--good); }
     .badge.caveat .value { color: var(--warn); }
     .badge.abstain .value { color: var(--bad); }
     .badge .meta { color: var(--muted); font-size: 11px; margin-top: 2px; overflow-wrap: anywhere; }
@@ -237,7 +238,7 @@
     .guard-alert.domain .meta { color: #ffcf80; }
     .verify { border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: var(--panel-2); margin-top: 8px; }
     .verify .vline { font-family: var(--mono); font-size: 12px; margin-top: 8px; overflow-wrap: anywhere; }
-    .verify .vline.ok { color: var(--accent); }
+    .verify .vline.ok { color: var(--good); }
     .verify .vline.bad { color: var(--bad); }
     .verify .vline.na { color: var(--muted); }
     .receipt-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
@@ -301,7 +302,7 @@
       <a href="#path">How it works</a>
       <a href="#confidence">Confidence</a>
       <a href="#limits">Limits</a>
-      <a href="https://github.com/andyuninvited/nvidia-receipts" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/andyuninvited/rosic-receipts" target="_blank" rel="noopener">GitHub</a>
       <a id="evalBadge" class="eval-badge" href="/eval-summary.json" target="_blank" rel="noopener" title="Golden-case evaluation suite">eval: loading</a>
       <a class="btn solid" href="#demo">Try the demo</a>
     </nav>
@@ -311,7 +312,7 @@
 <main id="top">
   <section class="wrap hero">
     <div class="hero-copy">
-      <p class="eyebrow">Audit-grade agentic AI for enterprise retail</p>
+      <p class="eyebrow">Audit-grade agentic AI for the enterprise</p>
       <h1>Every agent answer ships with an <em>audit receipt</em>.</h1>
       <p class="big">A retail operations agent that records what data it pulled, what the model saw, how confidence was computed, and which fallback fired, for every response, including the ones it refuses.</p>
       <ul class="proof">
@@ -322,7 +323,7 @@
       <div class="ctas">
         <a class="btn solid" href="#demo">Try to break it</a>
         <a class="btn" href="#path">See how a request flows</a>
-        <a class="btn" href="https://github.com/andyuninvited/nvidia-receipts/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">Read the architecture</a>
+        <a class="btn" href="https://github.com/andyuninvited/rosic-receipts/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">Read the architecture</a>
       </div>
     </div>
     <figure class="plate" aria-label="A real receipt from the repo, shown field by field">
@@ -345,7 +346,7 @@
           <div class="scanline" aria-hidden="true"></div>
         </div>
       </div>
-      <figcaption class="caption">Values from <a href="https://github.com/andyuninvited/nvidia-receipts/blob/main/receipts/ac9dddc9-f606-409e-84bf-00cd47768895.json" target="_blank" rel="noopener">a receipt committed to the repo</a>. Run your own below.</figcaption>
+      <figcaption class="caption">Values from <a href="https://github.com/andyuninvited/rosic-receipts/blob/main/receipts/ac9dddc9-f606-409e-84bf-00cd47768895.json" target="_blank" rel="noopener">a receipt committed to the repo</a>. Run your own below.</figcaption>
     </figure>
   </section>
 
@@ -478,8 +479,8 @@
         <p>The guards, the confidence math, the receipt schema, and the eval harness are all in the repo, MIT licensed.</p>
       </div>
       <div class="ctas">
-        <a class="btn solid" href="https://github.com/andyuninvited/nvidia-receipts" target="_blank" rel="noopener">View on GitHub</a>
-        <a class="btn" href="https://github.com/andyuninvited/nvidia-receipts/blob/main/receipt-schema.json" target="_blank" rel="noopener">Receipt schema</a>
+        <a class="btn solid" href="https://github.com/andyuninvited/rosic-receipts" target="_blank" rel="noopener">View on GitHub</a>
+        <a class="btn" href="https://github.com/andyuninvited/rosic-receipts/blob/main/receipt-schema.json" target="_blank" rel="noopener">Receipt schema</a>
       </div>
     </div>
   </section>
@@ -488,7 +489,7 @@
 <footer>
   <div class="wrap foot">
     <span>Independent portfolio prototype by Andy Rosic. Runs on NVIDIA NIM (Nemotron). Not affiliated with or endorsed by NVIDIA.</span>
-    <span><a href="https://github.com/andyuninvited/nvidia-receipts/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">Architecture</a> &middot; <a href="/eval-summary.json" target="_blank" rel="noopener">Eval results</a> &middot; <a href="https://github.com/andyuninvited/nvidia-receipts/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a></span>
+    <span><a href="https://github.com/andyuninvited/rosic-receipts/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">Architecture</a> &middot; <a href="/eval-summary.json" target="_blank" rel="noopener">Eval results</a> &middot; <a href="https://github.com/andyuninvited/rosic-receipts/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a></span>
   </div>
 </footer>
 
@@ -554,7 +555,7 @@
     Object.values(ids).forEach((id) => { $(`${id}-v`).textContent = parseFloat($(id).value).toFixed(2); });
     const { coverage, mult, score } = confidenceOf(c);
     const b = band(score, 0.65, 0.40);
-    const fillColor = { pass: "var(--accent)", caveat: "var(--warn)", abstain: "var(--bad)" }[b.cls];
+    const fillColor = { pass: "var(--good)", caveat: "var(--warn)", abstain: "var(--bad)" }[b.cls];
     $("c-score").textContent = score.toFixed(2);
     $("c-score").className = `score ${b.cls}`;
     $("c-band").textContent = { pass: "PASS: answer", caveat: "CAVEAT: answer, flagged as low confidence", abstain: "ABSTAIN: skip the model, route to a human" }[b.cls];

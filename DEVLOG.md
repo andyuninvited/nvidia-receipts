@@ -5,33 +5,32 @@
 **Current Task**: Rebrand from "NVIDIA Receipts" to "Rosic Receipts" (issue #7, branch chore/rebrand-rosic-receipts). PR open, not merged, not deployed to production. Live domain is now https://rosic-receipts.vercel.app (set up by Andy; the old NVIDIA-named domain redirects).
 
 **Key Files**:
-- `public/index.html` - Title, OG/Twitter meta, og:url, wordmark, hero eyebrow, request-path stage 05, limits copy, and footer rebranded. Footer carries the one NVIDIA mention: "Runs on NVIDIA NIM (Nemotron). Not affiliated with or endorsed by NVIDIA."
+- `public/index.html` - Title, OG/Twitter meta, og:url, repo links, accent palette, wordmark, hero eyebrow ("Audit-grade agentic AI for the enterprise"), request-path stage 05, limits copy, and footer rebranded. Footer carries the one NVIDIA mention: "Runs on NVIDIA NIM (Nemotron). Not affiliated with or endorsed by NVIDIA."
 - `README.md`, `ARCHITECTURE.md`, `PUBLISH.md` - Retail Blueprint and NeMo component framing replaced with neutral "enterprise retail agents" wording. Thesis, legacy coexistence, ROI math, and hosted NIM technical notes kept.
 - `CLAUDE.md` - Renamed, NVIDIA application context replaced with the current purpose.
 - `ui/app.py`, `src/cli.py` - Streamlit title, sidebar, and CLI description renamed.
 
 **Active Decisions**:
 - Env vars (`NVIDIA_API_KEY`, `NVIDIA_MODEL`, `NVIDIA_BASE_URL`), code identifiers, the NIM endpoint, and `model.provider = "nvidia_nim"` stay. They are accurate and renaming them would change behavior or the receipt schema.
-- GitHub repo name, `pyproject.toml` package name, and the schema `$id` stay `nvidia-receipts` until the repo itself is renamed (recommended in the PR).
+- Andy renamed the GitHub repo to `andyuninvited/rosic-receipts`. Repo URLs, the `pyproject.toml` and `uv.lock` package name, and the schema `$id` now use `rosic-receipts`. Nothing imports the package name; code imports `src`.
 - Historical DEVLOG entries are left as written.
 
 **Next Steps**:
 1. Andy reviews the Vercel preview and the footer wording, then merges.
-2. Optionally rename the GitHub repo to `rosic-receipts`, then update repo URLs, `pyproject.toml`, and the schema `$id` in one follow-up.
 
 **Blockers**: None.
 
 **Gotchas**:
-- The `--accent` color (#76b900) is NVIDIA green. Left as is; a palette change is a design call for Andy.
+- Accent moved off NVIDIA green (#76b900) to cool blue `--accent: #4cc2ff` (9.43:1 on #0e1116; black button text 10.47:1). Pass and good states split into `--good: #3fb950` (7.44:1) so green still means pass and `--bad` red still means fail. Yellow was ruled out because `--warn` amber marks caveats. The accent is one CSS variable if Andy wants to change it.
 - Local check ran a scratch dev server with NVIDIA_API_KEY unset, so answers came from the stub. No NIM credits spent.
 
 ## Session Archive
 
 ### 2026-11-09 - Rebrand to Rosic Receipts (issue #7)
-Renamed every user-facing "NVIDIA Receipts" to "Rosic Receipts" and pointed all live-demo URLs at rosic-receipts.vercel.app. Removed the NVIDIA Retail Blueprint and NeMo component pitch from the README, ARCHITECTURE.md, PUBLISH.md, and the site in favor of neutral enterprise retail agent wording; PUBLISH.md no longer references the NVIDIA application. The site keeps one factual footer line that it runs on NVIDIA NIM (Nemotron), plus the not-affiliated clause. No code, env var, API, or receipt schema changes. Verified with pytest (15 passed), the stub-mode eval harness (14/14), and a local server checked in headless Chrome at 1440px and 390px with no horizontal overflow.
+Renamed every user-facing "NVIDIA Receipts" to "Rosic Receipts" and pointed all live-demo URLs at rosic-receipts.vercel.app. Removed the NVIDIA Retail Blueprint and NeMo component pitch from the README, ARCHITECTURE.md, PUBLISH.md, and the site in favor of neutral enterprise retail agent wording; PUBLISH.md no longer references the NVIDIA application. The site keeps one factual footer line that it runs on NVIDIA NIM (Nemotron), plus the not-affiliated clause. Follow-up commit per Andy's review: repo URLs moved to the renamed andyuninvited/rosic-receipts repo, package name and schema $id updated, a stray reference to a separate project removed from the DEVLOG, hero eyebrow broadened to the enterprise, and the NVIDIA-green accent replaced with a cool blue plus a separate green for pass states. No code, env var, API, or receipt schema changes. Verified with pytest (15 passed), the stub-mode eval harness (14/14), and a local server checked in headless Chrome at 1440px and 390px with no horizontal overflow.
 
 ### 2026-11-09 - Homepage and demo redesign (issue #5)
-Rebuilt public/index.html for a two-minute walkthrough aimed at security-minded reviewers, porting structure and interaction quality from the Rosicodex redesign while keeping this site's palette. Added hero with animated receipt plate, request-path toggles, confidence explainer, guided scenarios, in-browser verify, raw JSON toggle, limits section, OG and Twitter meta, and prefers-reduced-motion handling. pytest 15 passed. Playwright with system Chrome at 1440px and 390px: all scenarios and pills render receipts, verify matches, no horizontal scroll, reduced motion disables the animation.
+Rebuilt public/index.html for a two-minute walkthrough aimed at security-minded reviewers, as a homepage redesign that kept this site's palette. Added hero with animated receipt plate, request-path toggles, confidence explainer, guided scenarios, in-browser verify, raw JSON toggle, limits section, OG and Twitter meta, and prefers-reduced-motion handling. pytest 15 passed. Playwright with system Chrome at 1440px and 390px: all scenarios and pills render receipts, verify matches, no horizontal scroll, reduced motion disables the animation.
 
 
 ### 2026-06-02 - Agentic-trust update (schema 1.2.0): injection guard, domain check, eval harness
