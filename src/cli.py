@@ -37,7 +37,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("question", help="The retail-operator question to answer")
     parser.add_argument(
         "--user",
-        default=os.environ.get("RECEIPT_USER", "me@andyrosic.com"),
+        default=os.environ.get("RECEIPT_USER", "demo-operator@example.com"),
         help="Identity stamped on the receipt",
     )
     parser.add_argument(

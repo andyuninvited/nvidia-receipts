@@ -52,7 +52,7 @@ class handler(BaseHTTPRequestHandler):
             self._respond(400, {"error": "question is required"})
             return
 
-        user = body.get("user") or os.environ.get("RECEIPT_USER", "me@andyrosic.com")
+        user = body.get("user") or os.environ.get("RECEIPT_USER", "demo-operator@example.com")
         ref_str = body.get("reference_date") or os.environ.get("REFERENCE_DATE")
         try:
             ref_date = date.fromisoformat(ref_str) if ref_str else None

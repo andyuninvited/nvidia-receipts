@@ -98,7 +98,7 @@ The Northeast clean-empty case is the demo-defining one: the model honestly says
 {
   "receipt_id": "88acccdd-ad2a-4317-90a4-d1aea169d094",
   "timestamp": "2026-04-23T23:33:55+00:00",
-  "user": "me@andyrosic.com",
+  "user": "demo-operator@example.com",
   "query": "Which SKUs are at risk of stockout this week in the Midwest?",
   "confidence": 1.0,
   "confidence_components": {

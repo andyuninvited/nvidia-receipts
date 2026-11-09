@@ -153,7 +153,7 @@ CASES: list[EvalCase] = [
 def run_case(case: EvalCase, receipts_dir: Path | str) -> tuple[bool, str, dict]:
     answer, receipt, _ = run_agent(
         case.question,
-        user="eval@andyrosic.com",
+        user="eval@example.com",
         data_dir=DATA_DIR,
         receipts_dir=receipts_dir,
         reference_date=REFERENCE_DATE,
@@ -171,7 +171,7 @@ def confidence_is_deterministic(receipts_dir: Path | str) -> tuple[bool, str]:
     for _ in range(2):
         _, receipt, _ = run_agent(
             q,
-            user="eval@andyrosic.com",
+            user="eval@example.com",
             data_dir=DATA_DIR,
             receipts_dir=receipts_dir,
             reference_date=REFERENCE_DATE,

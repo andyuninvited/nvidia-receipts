@@ -60,7 +60,7 @@ def _sidebar() -> dict:
     st.sidebar.markdown("**Identity**")
     user = st.sidebar.text_input(
         "User",
-        value=os.environ.get("RECEIPT_USER", "me@andyrosic.com"),
+        value=os.environ.get("RECEIPT_USER", "demo-operator@example.com"),
         label_visibility="collapsed",
     )
 

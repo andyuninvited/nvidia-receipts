@@ -79,6 +79,6 @@ Three downstream consumers read the receipt: risk and compliance (reproducibilit
 Optional:
 - `NVIDIA_MODEL` — defaults to `nvidia/nemotron-3.5-lightning-30b-a3b`
 - `REFERENCE_DATE` — `2026-04-23` (pin recency for stable demos)
-- `RECEIPT_USER` — defaults to `me@andyrosic.com`
+- `RECEIPT_USER` — defaults to `demo-operator@example.com`
 - `CONFIDENCE_CAVEAT_THRESHOLD` / `CONFIDENCE_ABSTAIN_THRESHOLD` — defaults 0.65 / 0.40
 - `REVIEW_MARGIN_THRESHOLD` — default 0.15. Grey-zone width above abstain. Caveat answers within this distance of abstain trigger a compliance review flag on the receipt.
