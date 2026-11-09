@@ -3,7 +3,7 @@
 A weekend prototype of an audit-grade agent for enterprise retail. Every answer the agent emits ships with a structured receipt that a retail risk committee can sign off on.
 
 **Live demo:** https://rosic-receipts.vercel.app/
-**Repo:** https://github.com/andyuninvited/nvidia-receipts (MIT)
+**Repo:** https://github.com/andyuninvited/rosic-receipts (MIT)
 
 ## Why this exists
 
@@ -30,8 +30,8 @@ This prototype is the receipts piece. The same pattern generalizes to any enterp
 ## Quickstart (local)
 
 ```bash
-git clone https://github.com/andyuninvited/nvidia-receipts
-cd nvidia-receipts
+git clone https://github.com/andyuninvited/rosic-receipts
+cd rosic-receipts
 
 python3.13 -m venv .venv
 source .venv/bin/activate

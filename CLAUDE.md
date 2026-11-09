@@ -3,9 +3,9 @@
 Audit-grade retail agent; the model is served by NVIDIA NIM. Every answer ships with a structured compliance receipt so a retail risk committee can sign off.
 
 - Live: https://rosic-receipts.vercel.app/ (the old NVIDIA-named domain redirects here)
-- Repo: https://github.com/andyuninvited/nvidia-receipts (MIT)
+- Repo: https://github.com/andyuninvited/rosic-receipts (MIT)
 
-Public portfolio prototype, used as proof for security, fintech, and AI product roles. Renamed from "NVIDIA Receipts" to "Rosic Receipts" in Nov 2026; the GitHub repo name and env vars were kept. Keep NVIDIA out of the pitch: one factual "Runs on NVIDIA NIM" line in the site footer is the only brand mention. Thesis: enterprise retail adoption of agentic AI stalls at the risk committee, not the model. Receipts are the platform primitive that unlocks production deployment.
+Public portfolio prototype, used as proof for security, fintech, and AI product roles. Renamed from "NVIDIA Receipts" to "Rosic Receipts" in Nov 2026; the GitHub repo was renamed to andyuninvited/rosic-receipts and the env vars were kept. Keep NVIDIA out of the pitch: one factual "Runs on NVIDIA NIM" line in the site footer is the only brand mention. Thesis: enterprise retail adoption of agentic AI stalls at the risk committee, not the model. Receipts are the platform primitive that unlocks production deployment.
 
 ## Stack
 

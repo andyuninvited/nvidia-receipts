@@ -166,7 +166,7 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-receipts"
+name = "rosic-receipts"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
