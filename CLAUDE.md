@@ -1,11 +1,11 @@
-# NVIDIA Receipts
+# Rosic Receipts
 
-Audit-grade retail agent on NVIDIA NIM. Every answer ships with a structured compliance receipt so a retail risk committee can sign off.
+Audit-grade retail agent; the model is served by NVIDIA NIM. Every answer ships with a structured compliance receipt so a retail risk committee can sign off.
 
-- Live: https://nvidia-receipts.vercel.app/
+- Live: https://rosic-receipts.vercel.app/ (the old NVIDIA-named domain redirects here)
 - Repo: https://github.com/andyuninvited/nvidia-receipts (MIT)
 
-Built as a portfolio prototype for the NVIDIA JR2015305 Director, Product Platform Retail and CPG application. Thesis: enterprise retail adoption of agentic AI stalls at the risk committee, not the model. Receipts are the platform primitive that unlocks production deployment.
+Public portfolio prototype, used as proof for security, fintech, and AI product roles. Renamed from "NVIDIA Receipts" to "Rosic Receipts" in Nov 2026; the GitHub repo name and env vars were kept. Keep NVIDIA out of the pitch: one factual "Runs on NVIDIA NIM" line in the site footer is the only brand mention. Thesis: enterprise retail adoption of agentic AI stalls at the risk committee, not the model. Receipts are the platform primitive that unlocks production deployment.
 
 ## Stack
 
@@ -67,7 +67,7 @@ Three downstream consumers read the receipt: risk and compliance (reproducibilit
 
 - 1000 free NIM credits on Andy's personal account at build.nvidia.com. Key in `.env` (gitignored) and Vercel env vars.
 - Vercel project Git-integrated; pushes to `main` auto-deploy. Static homepage from `public/`, Python function from `api/`.
-- The Northeast clean-empty case is the headline demo: model honestly says "none found" because the data is empty, receipt records why confidence dropped to 0.5 (volume=0, recency=0, specificity stayed 1.0). That's the audit story for a NVIDIA reviewer.
+- The Northeast clean-empty case is the headline demo: model honestly says "none found" because the data is empty, receipt records why confidence dropped to 0.5 (volume=0, recency=0, specificity stayed 1.0). That's the audit story for a security or compliance reviewer.
 - Coverage math fixed on 2026-04-24: empty results at high specificity now reach NIM with caveat instead of abstaining. See DEVLOG Mistakes & Lessons.
 - See `PUBLISH.md` for the demo script and three LinkedIn caption drafts.
 

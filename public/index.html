@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>NVIDIA Receipts: Audit-Grade Retail Agent</title>
-  <meta name="description" content="An agentic AI demo on NVIDIA NIM where every answer ships with a structured audit receipt. Prompt injections are blocked before the model is called, confidence is computed deterministically, and a golden-case eval suite backs the build." />
+  <title>Rosic Receipts: Audit-Grade Retail Agent</title>
+  <meta name="description" content="An agentic AI demo where every answer ships with a structured audit receipt. Prompt injections are blocked before the model is called, confidence is computed deterministically, and a golden-case eval suite backs the build." />
   <meta name="theme-color" content="#0e1116" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://nvidia-receipts.vercel.app/" />
-  <meta property="og:title" content="NVIDIA Receipts: every agent answer ships with an audit receipt" />
+  <meta property="og:url" content="https://rosic-receipts.vercel.app/" />
+  <meta property="og:title" content="Rosic Receipts: every agent answer ships with an audit receipt" />
   <meta property="og:description" content="Prompt-injection guard, deterministic confidence, and a receipt for every response. Try to break it." />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="NVIDIA Receipts: every agent answer ships with an audit receipt" />
+  <meta name="twitter:title" content="Rosic Receipts: every agent answer ships with an audit receipt" />
   <meta name="twitter:description" content="Prompt-injection guard, deterministic confidence, and a receipt for every response. Try to break it." />
   <style>
     :root {
@@ -296,7 +296,7 @@
 
 <header class="nav">
   <div class="wrap nav-inner">
-    <a href="#top" class="wordmark">NVIDIA <span>Receipts</span></a>
+    <a href="#top" class="wordmark">Rosic <span>Receipts</span></a>
     <nav class="nav-links" aria-label="Primary">
       <a href="#path">How it works</a>
       <a href="#confidence">Confidence</a>
@@ -311,7 +311,7 @@
 <main id="top">
   <section class="wrap hero">
     <div class="hero-copy">
-      <p class="eyebrow">Agentic AI on NVIDIA NIM</p>
+      <p class="eyebrow">Audit-grade agentic AI for enterprise retail</p>
       <h1>Every agent answer ships with an <em>audit receipt</em>.</h1>
       <p class="big">A retail operations agent that records what data it pulled, what the model saw, how confidence was computed, and which fallback fired, for every response, including the ones it refuses.</p>
       <ul class="proof">
@@ -365,7 +365,7 @@
         <li class="stage"><span class="mark"></span><span class="num">02</span><b>Answerability</b><p>Is the question inside the data domain? If not, route to a human with the true reason.</p><code>answerability</code></li>
         <li class="stage"><span class="mark"></span><span class="num">03</span><b>Retrieval</b><p>Inventory, sales, and supply signals. The filter and every row ID are recorded.</p><code>sources_queried</code></li>
         <li class="stage"><span class="mark"></span><span class="num">04</span><b>Confidence and decision</b><p>Deterministic score, then answer, caveat, or abstain. Below 0.40 the model is never called.</p><code>confidence_components</code> <code>fallback</code></li>
-        <li class="stage"><span class="mark"></span><span class="num">05</span><b>Model call</b><p>Nemotron on hosted NIM, or a deterministic stub. The provider is always recorded.</p><code>model</code> <code>prompt_context</code></li>
+        <li class="stage"><span class="mark"></span><span class="num">05</span><b>Model call</b><p>A hosted model, or a deterministic stub. The provider is always recorded.</p><code>model</code> <code>prompt_context</code></li>
       </ol>
       <div class="outcome" id="outcome" aria-live="polite">
         <div class="label" id="o-label"></div>
@@ -463,7 +463,7 @@
       <h2 class="h2">A prototype, scoped on purpose.</h2>
       <p class="lede">The retrieval is naive, the data is mocked, and there is no auth or policy engine. The receipt schema is the part meant to last: none of the production layers below require redesigning it.</p>
       <div class="limits">
-        <div><p class="label">Guards</p><p class="now">Input-side injection scan and a domain check.</p><p class="prod">Not yet: output-side validation, such as verifying that cited row IDs exist. Production adds <b>a NeMo Guardrails policy engine</b> with versioned policy bundles.</p></div>
+        <div><p class="label">Guards</p><p class="now">Input-side injection scan and a domain check.</p><p class="prod">Not yet: output-side validation, such as verifying that cited row IDs exist. Production adds <b>a guardrails policy engine</b> with versioned policy bundles.</p></div>
         <div><p class="label">Audit log</p><p class="now">Receipts written as local JSON files.</p><p class="prod">Production adds <b>an append-only store with a hash chain</b> and SOC 2 control mappings.</p></div>
         <div><p class="label">Identity</p><p class="now">An email string on the receipt.</p><p class="prod">Production adds <b>SSO subject, role, and entitlements</b> from the enterprise IdP.</p></div>
         <div><p class="label">Privacy and replay</p><p class="now">Prompt preview plus a SHA-256 of the full prompt.</p><p class="prod">Production adds <b>PII redaction in the preview</b> and a replay harness that reissues the prompt against any model.</p></div>
@@ -487,7 +487,7 @@
 
 <footer>
   <div class="wrap foot">
-    <span>Independent portfolio prototype by Andy Rosic. Not affiliated with or endorsed by NVIDIA.</span>
+    <span>Independent portfolio prototype by Andy Rosic. Runs on NVIDIA NIM (Nemotron). Not affiliated with or endorsed by NVIDIA.</span>
     <span><a href="https://github.com/andyuninvited/nvidia-receipts/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">Architecture</a> &middot; <a href="/eval-summary.json" target="_blank" rel="noopener">Eval results</a> &middot; <a href="https://github.com/andyuninvited/nvidia-receipts/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a></span>
   </div>
 </footer>

@@ -1,8 +1,8 @@
-# NVIDIA Receipts
+# Rosic Receipts
 
-A weekend prototype of an audit-grade retail agent on the NVIDIA NIM stack. Every answer the agent emits ships with a structured receipt that a retail risk committee can sign off on.
+A weekend prototype of an audit-grade agent for enterprise retail. Every answer the agent emits ships with a structured receipt that a retail risk committee can sign off on.
 
-**Live demo:** https://nvidia-receipts.vercel.app/
+**Live demo:** https://rosic-receipts.vercel.app/
 **Repo:** https://github.com/andyuninvited/nvidia-receipts (MIT)
 
 ## Why this exists
@@ -13,7 +13,7 @@ Enterprise retail adoption of agentic AI stalls at the risk committee, not the m
 2. **Legacy coexistence.** Retailers run AS/400, SAP ECC, and ColdFusion monoliths that are not getting replaced. Any agent that demands a green-field stack ships into a graveyard.
 3. **Outsized ROI math.** Net margins in retail run 2 to 6 percent. AI spend has to return 3 to 5x in documented value within 18 months or the program dies.
 
-This prototype is the receipts piece. The same pattern generalizes across every NVIDIA Retail Blueprint.
+This prototype is the receipts piece. The same pattern generalizes to any enterprise retail agent, whatever model or orchestration sits underneath it.
 
 ## What it does
 

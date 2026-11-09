@@ -38,7 +38,7 @@ SAMPLE_QUESTIONS = [
 ]
 
 st.set_page_config(
-    page_title="NVIDIA Receipts: Audit-Grade Retail Agent",
+    page_title="Rosic Receipts: Audit-Grade Retail Agent",
     layout="wide",
     page_icon=None,
 )
@@ -54,8 +54,8 @@ def _parse_ref_date(s: str | None) -> date | None:
 
 
 def _sidebar() -> dict:
-    st.sidebar.title("NVIDIA Receipts")
-    st.sidebar.caption("Audit-grade retail agent on NIM")
+    st.sidebar.title("Rosic Receipts")
+    st.sidebar.caption("Audit-grade retail agent")
 
     st.sidebar.markdown("**Identity**")
     user = st.sidebar.text_input(
